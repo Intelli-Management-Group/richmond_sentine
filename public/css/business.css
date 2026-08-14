@@ -1,0 +1,53 @@
+.business_container .panel-body, .event_container .panel-body {
+    padding: 0px 20px;
+    border: none;
+}
+
+#business_list_table .dataTable tbody tr td {
+    word-break: break-all;
+}
+
+.business_image,.event_image {
+    max-height: 50px;
+    max-width: 75px;
+}
+
+#logoThumbnail {
+    width: 120px;
+    height: 90px;
+}
+
+.text-underline {
+    text-decoration: underline;
+}
+
+.jcrop-keymgr {
+    opacity: 0;
+}
+
+#bannerThumbnail {
+    width: 200px;
+    height: 101px;
+}
+.publish_button {
+    background: #223e92 none repeat scroll 0 0;
+    border: 1px solid #fff;
+    border-radius: 15px;
+    color: #fff;
+    font-size: 13px;
+    height: 25px;
+    margin-top: 0;
+    border: none;
+}
+#business_list_table table{
+    table-layout: fixed;
+    word-wrap:break-word;
+}
+.business-icon a i{
+    color: #666 !important;
+    cursor: pointer;
+}
+.business-delete-icon a i{
+    color: #223e92 !important;
+    cursor: pointer;
+}

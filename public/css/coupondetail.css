@@ -1,0 +1,21 @@
+.banner-inner img 
+{
+    height:350px !important;
+}
+.head_strip
+{
+    color:black;
+}
+
+@media(max-width:768px)
+{
+    #ad1
+    {
+        display: none;
+    }
+    iframe
+    {
+        width:100%;
+    }
+    
+}

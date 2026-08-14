@@ -1,0 +1,11 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "638BW42L7E.com.intellidt.richmondsentinel",
+                "paths": ["/article-detail/*/*"]
+            }
+        ]
+    }
+}

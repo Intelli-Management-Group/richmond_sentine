@@ -1,0 +1,70 @@
+.edition_container .panel-body {
+    padding: 0px 20px;
+    border: none;
+}
+
+.edition_container a:hover {
+    text-decoration: none;
+}
+
+.publish_button {
+    background: #223e92 none repeat scroll 0 0;
+    border: 1px solid #fff;
+    border-radius: 15px;
+    color: #fff;
+    font-size: 13px;
+    height: 25px;
+    margin-top: 0;
+    width: 80px;
+    border: none;
+}
+
+.btn-lg,
+.btn-group-lg>.btn {
+    padding: 0px 0px 0px;
+}
+
+.unpublish_button {
+    background: #ff0000;
+    border: 1px solid #fff;
+    color: #000;
+    height: 33px;
+    width: 80px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.edition_image {
+    object-fit: contain;
+    width: 100px;
+    height: 100px;
+}
+
+.edition_container .browsebtn {
+    margin-bottom: 0px !important;
+}
+
+.edition_thumbnail {
+    max-width: 100%;
+    max-height: 100%;
+    height: 150px;
+}
+
+.edition_detail {
+    border: 1px solid #eee;
+    padding: 8px 5px;
+}
+.MB10{
+    margin-bottom: 10px;
+}
+.edition_link{
+    display: block;
+    cursor: pointer;
+}
+.edition_name{     
+     white-space: nowrap;
+     overflow: hidden !important;
+     text-overflow: ellipsis;
+}

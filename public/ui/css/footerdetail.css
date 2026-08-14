@@ -1,0 +1,12 @@
+.footerdetail_container .panel-body {
+    padding: 0px 20px;
+    border: none;
+}
+.submit
+{
+margin-bottom:20px;
+}
+.calendar-table,.drp-selected
+{
+    display:none !important;
+}

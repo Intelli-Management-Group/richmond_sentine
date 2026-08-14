@@ -1,0 +1,214 @@
+.partition {
+    margin-top: 20px;
+}
+
+/* category */
+#catList {
+    list-style: none;
+    font-size: 12pt;
+    display: block;
+    width: -moz-fit-content;
+    width: fit-content;
+    width: -webkit-fit-content;
+    margin-bottom: 25px;
+    left: 50%;
+    position: relative;
+    transform: translateX(-50%);
+    padding: 0px;
+    color: #333;
+}
+
+#catList .active {
+    color: #3a53a0;
+
+}
+
+#catList li {
+    display: inline-block;
+    margin: 10px 15px;
+    cursor: pointer;
+}
+
+#catList li a {
+
+    cursor: pointer;
+    color: black;
+}
+
+#catList li a:active {
+    color: black;
+}
+
+
+/* coupons */
+.couponzone-inner {
+    height: 440px;
+    width: 257px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.couponzone-inner img {
+    height: 255px !important;
+    width: 255px !important;
+}
+
+.coupon-detail {
+    padding: 15px 10px;
+}
+
+.coupon_head {
+    font-size: .8rem;
+    font-family: Helvetica;
+    display: block;
+    line-height: 16px;
+    text-transform: uppercase;
+    margin-bottom: 0px;
+}
+
+.head_name {
+    height: 95px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.company_name {
+    color: #999;
+    font-size: 10pt;
+    margin-bottom: 0px;
+}
+
+.price {
+    font-size: 20px;
+}
+
+.Original_Price {
+    text-decoration: line-through;
+    font-size: 20px;
+}
+
+.Discount_Price {
+    color: #32CD32;
+    font-size: 20px;
+}
+
+
+.discount-box {
+    border: 1px solid #32CD32;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+
+.community,
+.business,
+.international,
+.sports {
+
+    background-color: transparent;
+    border: none;
+
+}
+
+.community img,
+.business img,
+.international img,
+.sports img {
+    padding-bottom: 10px;
+}
+
+.community .card-body,
+.business .card-body,
+.international .card-body,
+.sports .card-body {
+    padding: 0px !important;
+}
+
+
+@media (max-width: 600px) {
+    .heading h3 {
+        font-family: Helvetica;
+        font-weight: bold;
+        color: #293e83;
+        display: inline;
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 992px) {
+
+
+    /*-- Ad Fade slider --*/
+    .ad_carousel img {
+        width: 1110px;
+    }
+
+    /*-- news slider--*/
+    .community,
+    .business,
+    .international,
+    .sports {
+
+        width: 202px;
+
+    }
+
+    .community img,
+    .business img,
+    .international img,
+    .sports img {
+        height: 133px !important;
+        width: 200px !important;
+    }
+
+    .owl-dots {
+        display: none;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .community-inner,
+    .business-inner,
+    .international-inner,
+    .sports-inner {
+        padding: 15px;
+    }
+
+    .couponzone-inner {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .couponzone-inner img {
+
+        width: 100% ! important;
+    }
+
+}
+.coupon_container .panel-body {
+    padding: 0px 20px;
+    border: none;
+}
+.coupon_container .panel-heading h2{
+    width: auto;
+}
+
+
+.publish_button {
+    background: #223e92 none repeat scroll 0 0;
+    border: 1px solid #fff;
+    border-radius: 15px;
+    color: #fff;
+    font-size: 13px;
+    height: 25px;
+    margin-top: 0;
+    width: 80px;
+    border: none;
+}
+.coupon_image{
+    width:100px;
+    height: 100px;
+    object-fit: contain;
+}
