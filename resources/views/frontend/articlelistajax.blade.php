@@ -30,11 +30,7 @@
                         <p class="mt-2 mb-1 font-weight-light text-left">{!! $article->heading !!}</p>
 
                         <p class=" mb-1 font-weight-light color-gray" style="font-size: 11px;">
-                            @if (Carbon\Carbon::parse($article->created_at)->timestamp != Carbon\Carbon::parse($article->updated_at)->timestamp)
-                            {!! Carbon\Carbon::parse($article->updated_at)->format('F j, Y') !!}
-                            @else
                             {!! Carbon\Carbon::parse($article->publishDate)->format('F j, Y') !!}
-                            @endif
                         </p>
                     </div>
                 </a>

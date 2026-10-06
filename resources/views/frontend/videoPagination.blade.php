@@ -29,11 +29,7 @@
                        <div class="thumbnail-height video-headinng">
                        <p class="mt-2 mb-1 font-weight-light text-left">{{ str_limit($v->heading,80) }}</p>
                        <p class=" mb-1 font-weight-light color-gray" style="font-size: 11px;">
-                        @if (Carbon\Carbon::parse($v->created_at)->timestamp != Carbon\Carbon::parse($v->updated_at)->timestamp)
-                            {!! Carbon\Carbon::parse($v->updated_at)->format('F j, Y') !!}
-                        @else
                         {!! Carbon\Carbon::parse($v->publishDate)->format('F j, Y') !!}
-                       @endif
                         </p>
                         </div>
                    </div>

@@ -90,11 +90,7 @@
                                     <p class="mt-2 mb-1  font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class=" color-gray" style="font-size: 11px;">
-                                    @if (Carbon\Carbon::parse($n->created_at)->timestamp != Carbon\Carbon::parse($n->updated_at)->timestamp)
-                                    {!! Carbon\Carbon::parse($n->updated_at)->format('F j, Y') !!}
-                                    @else
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}
-                                    @endif
                                 </p>
                             </div>
 
@@ -130,11 +126,7 @@
                                     <p class="mt-2 mb-1 font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class="mb-1 color-gray" style="font-size: 11px;">
-                                    @if (Carbon\Carbon::parse($n->created_at)->timestamp != Carbon\Carbon::parse($n->updated_at)->timestamp)
-                                    {!! Carbon\Carbon::parse($n->updated_at)->format('F j, Y') !!}
-                                    @else
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}
-                                    @endif
                                 </p>
                             </div>
                         </div>
@@ -169,11 +161,7 @@
                                     <p class="mt-2 mb-1   font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class="mb-1 color-gray" style="font-size: 11px;">
-                                    @if (Carbon\Carbon::parse($n->created_at)->timestamp != Carbon\Carbon::parse($n->updated_at)->timestamp)
-                                    {!! Carbon\Carbon::parse($n->updated_at)->format('F j, Y') !!}
-                                    @else
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}
-                                    @endif
                                 </p>
                             </div>
 

@@ -72,11 +72,7 @@
                             <p class="mb-1">By <a href="" class="color-lightblue">{!!$article_l->authorDetail->name
                                     !!}</a></p>
                             <p class="mb-1">Published
-                                @if (Carbon\Carbon::parse($article_l->created_at)->timestamp != Carbon\Carbon::parse($article_l->updated_at)->timestamp)
-                                {!! Carbon\Carbon::parse($article_l->updated_at)->format('g:i T, D F j, Y') !!}
-                                @else
                                 {!! Carbon\Carbon::parse($article_l->publishDate)->format('g:i T, D F j, Y') !!}
-                                @endif
                             </p>
                         </div>
                     </div>
