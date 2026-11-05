@@ -1,0 +1,21 @@
+
+.video-inner,.snapshot-inner,.community-inner,.canada-inner,.international-inner,.business-inner,.sports-inner,.related-article-inner,.related-event-inner
+{
+    width:200px;
+
+}
+@media (max-width: 768px)
+{
+    .active-inner,.article-inner video,.article-inner img
+    {
+        width:100%;
+    }
+}
+@media (max-width: 600px)
+     {
+        .video-inner,.snapshot-inner,.community-inner,.canada-inner,.international-inner,.business-inner,.sports-inner,.related-article-inner,.related-event-inner
+        {
+            padding:15px;
+            width:100%;
+        }
+     }

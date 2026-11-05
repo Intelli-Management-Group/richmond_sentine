@@ -1,0 +1,24 @@
+.videolist-inner
+{
+    border: 1px solid grey;
+    background-color: white;
+   
+}
+.videolist-detail
+{
+
+    height:250px;
+}
+.video video ,.video iframe
+{
+    width: 100%;
+    height:133px;
+
+}
+@media (max-width: 576px) { 
+    .videolist-inner
+    {
+        margin-bottom:10px;
+    } 
+}
+
