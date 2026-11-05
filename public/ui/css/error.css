@@ -1,0 +1,90 @@
+/***** NOT FOUND PANEL *****/
+.notfoundpanel {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-top: 50px;
+}
+
+@media (max-width: 640px) {
+    .notfoundpanel {
+        width: auto;
+        position: static;
+        transform: none;
+        padding: 20px;
+    }
+}
+
+.notfoundpanel h1 {
+    font-size: 200px;
+    font-weight: 700;
+    line-height: 160px;
+    color: #3b4354;
+    margin: 0 0 20px;
+}
+
+@media (max-width: 640px) {
+    .notfoundpanel h1 {
+        font-size: 100px;
+        line-height: 100px;
+    }
+}
+
+.notfoundpanel h3 {
+    margin-top: 0;
+    font-weight: 300;
+    font-size: 30px;
+    color: #505b72;
+}
+
+@media (max-width: 640px) {
+    .notfoundpanel h3 {
+        font-size: 24px;
+    }
+}
+
+.notfoundpanel h4 {
+    margin: 30px 0 20px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 21px;
+    color: #5b6781;
+    letter-spacing: .3px;
+}
+
+.notfoundpanel form {
+    width: 350px;
+    margin: auto;
+}
+
+@media (max-width: 360px) {
+    .notfoundpanel form {
+        width: 280px;
+    }
+}
+
+.notfoundpanel .list-inline {
+    text-align: left;
+}
+
+@media (max-width: 560px) {
+    .notfoundpanel .list-inline>li:last-child {
+        display: block;
+        float: none !important;
+        text-align: left;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .notfoundpanel .list-inline>li {
+        display: block;
+        float: none;
+    }
+
+    .notfoundpanel .list-inline>li+li {
+        margin-top: 5px;
+    }
+}

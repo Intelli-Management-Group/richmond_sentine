@@ -1,0 +1,395 @@
+/*--top--*/
+
+.partition {
+    margin-top: 20px;
+}
+
+.heading-link img {
+    vertical-align: text-bottom;
+}
+
+/*------------------*/
+
+/*    Top Slider    */
+
+/*------------------*/
+
+.carousel-indicators {
+    top: 380px !important;
+    height: 50px;
+}
+
+.carousel-indicators li {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    border: 1px solid rgba(72, 71, 71, 0.5);
+}
+
+/*------------------*/
+
+/*    Video Icon    */
+
+/*------------------*/
+
+.video-top, .video-search, .video-youtube {
+    position: relative;
+}
+
+.video-top-play-button-home {
+    box-sizing: border-box;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: -220px;
+    left: 400px;
+    display: block;
+    opacity: 0.95;
+    cursor: pointer;
+    transition: opacity 150ms;
+}
+
+.video-top-play-button {
+    box-sizing: border-box;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 200px;
+    left: 400px;
+    display: block;
+    opacity: 0.95;
+    cursor: pointer;
+    transition: opacity 150ms;
+}
+
+.video-list-play-button {
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    opacity: 0.95;
+    cursor: pointer;
+    transition: opacity 150ms;
+    transform: translate(-50%, -50%);
+}
+
+.video-overlay-play-button {
+    box-sizing: border-box;
+    width: 20px !important;
+    height: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    opacity: 0.95;
+    cursor: pointer;
+    transition: opacity 150ms;
+    transform: translate(-50%, -50%);
+}
+
+.video-search-play-button {
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: -65px;
+    left: 90px;
+    display: block;
+    opacity: 0.95;
+    cursor: pointer;
+    transition: opacity 150ms;
+}
+
+.video-youtube-play-button {
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: -80px;
+    left: 100px;
+    display: block;
+    opacity: 0.95;
+    cursor: pointer;
+    transition: opacity 150ms;
+}
+
+.article-headline {
+    font-size: 3.5rem;
+}
+
+.article-summary {
+    color: #666;
+}
+
+/*------------------*/
+
+/*    Responsive    */
+
+/*------------------*/
+
+@media (max-width: 768px) {
+    .seeall {
+        display: block !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .canada, .video {
+        margin-right: 0.5em !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .heading h3 {
+        font-family: Helvetica;
+        font-weight: bold;
+        color: #293e83;
+        display: inline;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 1200px) and (min-width: 992px) {
+    .carousel-indicators {
+        top: 300px !important;
+    }
+    .video-top-play-button-home {
+        box-sizing: border-box;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        top: -200px;
+        left: 300px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+    .video-top-play-button {
+        box-sizing: border-box;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        top: 200px;
+        left: 300px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+    .video-youtube-play-button {
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: -70px;
+        left: 90px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+    .video-search-play-button {
+        box-sizing: border-box;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: -60px;
+        left: 70px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+}
+
+@media (max-width: 992px) and (min-width: 768px) {
+    .carousel-indicators {
+        top: 300px !important;
+    }
+    .video-top-play-button {
+        box-sizing: border-box;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        top: 200px;
+        left: 300px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+    .video-top-play-button-home {
+        box-sizing: border-box;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        top: -200px;
+        left: 300px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+    .video-search-play-button {
+        box-sizing: border-box;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: -50px;
+        left: 50px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+}
+
+/*------------------*/
+
+/*      Phone       */
+
+/*------------------*/
+
+@media (max-width: 576px) {
+    .article-headline
+    {
+        font-size:1.5rem; 
+    }
+    h3,h4
+    {
+        font-size:1rem !important;
+    }
+    .min-60 {
+        min-height: 40px;
+    }
+    .thumbnail-height {
+        height: 60px;
+        overflow: hidden;
+    }
+    .carousel-indicators {
+        top: 150px !important;
+    }
+    /*---------------------------*/
+    /*    Video Icon For Phone   */
+    /*---------------------------*/
+    .video-top-play-button {
+        box-sizing: border-box;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        top: 80px;
+        left: 130px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+    .video-top-play-button-home {
+        box-sizing: border-box;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        top: -100px;
+        left: 150px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+    .video-youtube-play-button {
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: -100px;
+        left: 150px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+    .video-search-play-button {
+        box-sizing: border-box;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: -100px;
+        left: 150px;
+        display: block;
+        opacity: 0.95;
+        cursor: pointer;
+        transition: opacity 150ms;
+    }
+}
+
+.video {
+    background-color: transparent;
+    border: none;
+}
+
+.video img {
+    padding-bottom: 10px;
+}
+
+.coupon img {
+    padding-bottom: 10px;
+}
+
+.coupon .card-body {
+    padding: 0px 10px;
+}
+
+.video .card-body {
+    padding: 0px !important;
+}
+
+@media (min-width: 992px) {
+    .sidebarresponsive {
+        display: none;
+    }
+    .video-inner {
+        width: 200px;
+        padding: 0px;
+        margin: 0px;
+    }
+    video {
+        width: 100%;
+        object-fit: initial;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+    }
+    /*-- coupon slider--*/
+    .coupon-inner {
+        width: 200px;
+        background-color: white;
+    }
+    .owl-dots {
+        display: none;
+    }
+}
+
+@media (max-width: 992px) {
+    #carouselFadead1 {
+        margin-top: 20px;
+    }
+    .sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .video-inner {
+        padding: 15px;
+    }
+    .snapshot-inner {
+        padding: 15px;
+    }
+    .coupon-inner {
+        padding: 15px;
+    }
+}
