@@ -6,7 +6,7 @@
         </p>
     </video>
 @else
-    <iframe width="100%" height="464" src="https://www.youtube.com/embed/{!!$video->youtubeUrl!!}?controls=0" frameborder="0" allow="autoplay;" allowfullscreen></iframe>
+    <iframe width="100%" height="464" src="https://www.youtube.com/embed/{!!$video->youtubeUrl!!}?controls=1" frameborder="0" allow="autoplay;" allowfullscreen></iframe>
 {{--    <iframe width="100%" height="464" src="http://www.youtube.com/embed/{!!$video->youtubeUrl!!}?autoplay=1" frameborder="0" allowfullscreen></iframe>--}}
 @endif
 <div id="heading">
