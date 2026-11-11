@@ -367,7 +367,7 @@ class ArticleController extends Controller
 
                 $counter = $article_file->id;
 
-                $file_name = $value->getClientOriginalName();
+                $file_name = $article_file->id . "." . $value->clientExtension();
                 $value->move($destination_path, $file_name);
                 $article_file->fileName = $file_name;
 
@@ -535,7 +535,7 @@ class ArticleController extends Controller
                 File::makeDirectory($destination_path);
             }
             if (isset($video_file)) {
-                $video_file_name = $video_file->getClientOriginalName();
+                $video_file_name = $data->id . "." . $video_file->clientExtension();
                 $video_file->move($destination_path, $video_file_name);
 
                 $data->videoDuration = $request->input("video_duration");
@@ -563,7 +563,7 @@ class ArticleController extends Controller
                         unlink(public_path("uploads/video_thumbnail/" . $data->videoThumbnail));
                         $data->videoFile = "";
                     }
-                    $video_thumbnail_image = $thumbnail_image->getClientOriginalName();
+                    $video_thumbnail_image = $data->id . "." . $thumbnail_image->clientExtension();
                     $thumbnail_image->move(public_path('uploads/video_thumbnail'), $video_thumbnail_image);
                     $data->videoThumbnail = $video_thumbnail_image;
                 }
@@ -794,4 +794,3 @@ class ArticleController extends Controller
     }
 
 }
-
