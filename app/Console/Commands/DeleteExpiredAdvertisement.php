@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\AdvertisementDetail;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
 
 class DeleteExpiredAdvertisement extends Command
 {
@@ -41,7 +40,7 @@ class DeleteExpiredAdvertisement extends Command
     public function handle()
     {
         try {
-            $advertisement = AdvertisementDetail::whereRaw("expiryDate IS NOT NULL AND status IS NOT 0")->get();
+            $advertisement = AdvertisementDetail::whereRaw("expiryDate IS NOT NULL")->get();
             $deleted_advertisement = array();
             foreach (count((array)$advertisement) > 0 ? $advertisement : array() as $data) {
                 if (Carbon::now()->timestamp >= Carbon::parse($data->expiryDate)->timestamp) {
@@ -50,20 +49,10 @@ class DeleteExpiredAdvertisement extends Command
                     array_push($deleted_advertisement,$data->id);
                 }
             }
-            $fileName = 'unpublish_advertisement_log.txt';
-            
-	       //  File::append(public_path('/uploads/'.$fileName),json_encode($deleted_advertisement));
-	         
-	         File::append(public_path("uploads/{$fileName}"), date("m/d/Y H:i:s") . PHP_EOL);
+            $fileName = 'advertisement.txt';
+	         \File::append(public_path('/uploads/'.$fileName),json_encode($deleted_advertisement));
         } catch (\Exception $e) {
-            
-            $fileName = 'unpublis_advertisement_log.txt';
-            
-            File::append(public_path("uploads/{$fileName}"), $e->getMessage() . PHP_EOL);
-            File::append(public_path("uploads/{$fileName}"), date("m/d/Y H:i:s") . PHP_EOL);
-            
-            $this->error($e->getMessage());
-            return 1;
+            return $e->getMessage();
         }
     }
 }

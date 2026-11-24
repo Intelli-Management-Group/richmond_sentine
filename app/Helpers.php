@@ -30,10 +30,11 @@ function generate_access_token($type, $user_id)
 
 function get_feature_id($name)
 {
-    return cache()->remember("feature_id_{$name}", 60 * 60, function () use ($name) {
-        $get_feature_id = ArticleFeatureDetail::select("id")->where("name", $name)->first();
-        return $get_feature_id ? $get_feature_id->id : "0";
-    });
+    $get_feature_id = ArticleFeatureDetail::select("id")->where("name", $name)->first();
+    if ($get_feature_id) {
+        return $get_feature_id->id;
+    }
+    return "0";
 }
 
 /**
