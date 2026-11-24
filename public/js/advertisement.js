@@ -1,5 +1,5 @@
  $(document).ready(function () {
-    )
+  
      var date = new Date();
      $("#expiryDate").datepicker({
          format: "yyyy-mm-dd",

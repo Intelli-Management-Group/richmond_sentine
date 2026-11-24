@@ -22,3 +22,11 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+error_log
+.ftpquota
+.htaccess.bak
+Richmond_old_backup/
+tests/old.zip
+src/
+app/Console/Commands/TestHello.php
+.DS_Store
