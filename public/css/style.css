@@ -417,6 +417,15 @@ label {
     overflow: hidden;
 }
 
+/* Clamp card titles so the publish date below them stays inside .thumbnail-height */
+.thumbnail-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+}
+
 /*--------height and width -------------*/
 /*--------Links -------------*/
 a {

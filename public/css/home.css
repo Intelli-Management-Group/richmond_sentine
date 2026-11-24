@@ -270,6 +270,10 @@
         height: 60px;
         overflow: hidden;
     }
+    .thumbnail-title {
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
     .carousel-indicators {
         top: 150px !important;
     }

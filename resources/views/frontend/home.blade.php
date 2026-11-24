@@ -87,7 +87,7 @@
                             </div>
                             <div class="thumbnail-height">
                                 <a href="{{ route('article-detail',["$n->id",str_slug("$n->heading", "-")]) }}">
-                                    <p class="mt-2 mb-1  font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
+                                    <p class="mt-2 mb-1  font-weight-light text-left thumbnail-title">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class=" color-gray" style="font-size: 11px;">
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}
@@ -123,7 +123,7 @@
                             </div>
                             <div class="thumbnail-height">
                                 <a href="{{ route('article-detail',["$n->id",str_slug("$n->heading", "-")]) }}">
-                                    <p class="mt-2 mb-1 font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
+                                    <p class="mt-2 mb-1 font-weight-light text-left thumbnail-title">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class="mb-1 color-gray" style="font-size: 11px;">
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}
@@ -158,7 +158,7 @@
                             </div>
                             <div class="thumbnail-height">
                                 <a href="{{ route('article-detail',["$n->id",str_slug("$n->heading", "-")]) }}">
-                                    <p class="mt-2 mb-1   font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
+                                    <p class="mt-2 mb-1   font-weight-light text-left thumbnail-title">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class="mb-1 color-gray" style="font-size: 11px;">
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}

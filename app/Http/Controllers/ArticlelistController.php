@@ -26,13 +26,8 @@ class ArticlelistController extends Controller
             array_push($category_ids, $id);
         }
         $top_slider =getArticleDatahome($category_ids, 8, "true", "false", "false");
-        $slider_article=array();
-        foreach(!$top_slider->isEmpty() ? $top_slider : array() as $s)
-        {
-            array_push( $slider_article,$s->id);
-        }
-        // dd($slider_article);
-        $articles = getArticlelist($category_ids, null, $slider_article);
+        // Slider articles are intentionally not excluded from the list below.
+        $articles = getArticlelist($category_ids, null);
 
 
         if ($request->ajax()) {
