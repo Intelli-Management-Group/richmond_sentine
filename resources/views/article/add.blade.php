@@ -8,12 +8,6 @@
         <li class="active">{{ $title }} {{ isset($article_data) ? "Edit" : "Add" }}</li>
     </ol>
     
-    // <?php 
-        
-        // print_r($category_data_array);die;
-    
-    // ?>
-    
     <div class="row">
         <div class="col-md-12">
             <div class="panel article_container">

@@ -184,7 +184,7 @@ class CommonController extends Controller
                     $result[$parsed_start_date->format("Y-m-d")] = array("date" => $parsed_start_date->format("Y-m-j"), "total_steps" => 0);
                     $parsed_start_date->addDay();
                 }
-                $data = StepsDetail::where("userId", $user_id)->whereRaw("(stepDate >= '" . $request->input("start_date") . "' AND stepDate <= '" . $request->input("end_date") . "')")->orderBy("stepDate", "asc")->get();
+                $data = StepsDetail::where("userId", $user_id)->where("stepDate", ">=", $start_date)->where("stepDate", "<=", $end_date)->orderBy("stepDate", "asc")->get();
                 foreach (!$data->isEmpty() ? $data : array() as $d) {
                     $result[$d->stepDate]["total_steps"] = $d->totalSteps;
                 }

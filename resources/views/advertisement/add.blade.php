@@ -25,8 +25,8 @@
                           enctype="multipart/form-data"
                           class="form-horizontal"
                           id="advertisement_form">
-                      
-                        
+                        @csrf
+
                         <input type="hidden" name="advertisement_id" value="{{ isset($advertisement_data['advertisement_id']) ? $advertisement_data['advertisement_id'] : '' }}">
 
                         <div class="form-group">

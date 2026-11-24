@@ -132,7 +132,7 @@ class CouponzoneController extends Controller
             }
             $coupon_data = CouponDetail::whereRaw(1);
             if ($search_value != "") {
-                $coupon_data = $coupon_data->whereRaw("(name like '%" . $search_value . "%' OR heading like '%" . $search_value . "%' OR companyName like '%" . $search_value . "%')");
+                $coupon_data = $coupon_data->whereAny(["name", "heading", "companyName"], "like", "%" . $search_value . "%");
             }
             $total_coupons = $coupon_data->count();
             $coupon_data = $coupon_data->skip($start)->take($end)->orderBy($sort_column_name, $sort_order)->get();

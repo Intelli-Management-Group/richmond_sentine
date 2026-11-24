@@ -775,7 +775,7 @@ class ArticleController extends Controller
             $user_data->email = $request->input("email");
             $user_data->phoneNo = $request->input("phoneNo");
             $user_data->isVerified = 0;
-            $user_data->verificationCode = rand(1111, 9999);
+            $user_data->verificationCode = random_int(1111, 9999);
             $verificationcode = $user_data->verificationCode;
             $user_data->increment('verificationCount', 1);
             $user_data->save();
@@ -912,9 +912,9 @@ class ArticleController extends Controller
             if ($user_detail->verificationCount >= 2) {
                 return $this->sendResultJSON("2", "You have exceeded the limit of verification attempts.Please email us for further process");
             }
-            $verification_code = rand(1111, 9999);
+            $verification_code = random_int(1111, 9999);
             if ($user_detail->verificationCode == $verification_code) {
-                $verification_code = rand(1111, 9999);
+                $verification_code = random_int(1111, 9999);
             }
             $user_detail->verificationCode = $verification_code;
             $user_detail->increment('verificationCount', 1);
@@ -1156,20 +1156,17 @@ class ArticleController extends Controller
             $data = UserwiseArticleBookmarkDetail::leftJoin("article_details", function ($join) {
                 $join->on("userwise_article_bookmark_details.articleId", "=", "article_details.id");
             })->where("userwise_article_bookmark_details.userId", $user_id)->where("userwise_article_bookmark_details.bookmarkStatus", 1);
-            $search_string = array();
             if ($category_ids != "" && !$is_video) {
-                array_push($search_string, 'article_details.categoryId IN (' . $category_ids . ')');
+                $data = $data->whereIn("article_details.categoryId", parseIdList($category_ids));
             }
             if ($author_ids != "") {
-                array_push($search_string, 'article_details.authorId IN (' . $author_ids . ')');
+                $data = $data->whereIn("article_details.authorId", parseIdList($author_ids));
             }
             if ($start_date != "" && $end_date != "") {
-                array_push($search_string, "(article_details.publishDate >= '$start_date' AND article_details.publishDate <= '$end_date')");
+                $data = $data->where("article_details.publishDate", ">=", $start_date)->where("article_details.publishDate", "<=", $end_date);
             }
-            $where_str = (count($search_string) > 0 ? (implode(" and ", $search_string) . ($is_video ? " AND isVideo = 1" : "")) : ($is_video ? "article_details.isVideo = 1" : ""));
-
-            if ($where_str != "") {
-                $data = $data->whereRaw($where_str);
+            if ($is_video) {
+                $data = $data->where("article_details.isVideo", 1);
             }
             if ($sort_by != "") {
                 if ($sort_by == "DateDesc") {
@@ -1392,22 +1389,20 @@ class ArticleController extends Controller
                 $start_index++;
             }
             $data = ArticleDetail::where("status", 1);
-            $search_string = array();
             if ($search_keyword != "") {
-                array_push($search_string, '(heading like "%' . $search_keyword . '%" OR summary like "%' . $search_keyword . '%" OR imageCredit like "%' . $search_keyword . '%" OR imageCaption like "%' . $search_keyword . '%" OR source like "%' . $search_keyword . '%" OR metatag like "%' . $search_keyword . '%" OR videoCredit like "%' . $search_keyword . '%")');
+                $data = $data->whereAny(["heading", "summary", "imageCredit", "imageCaption", "source", "metatag", "videoCredit"], "like", "%" . $search_keyword . "%");
             }
             if ($category_ids != "" && !$is_video) {
-                array_push($search_string, 'categoryId IN (' . $category_ids . ')');
+                $data = $data->whereIn("categoryId", parseIdList($category_ids));
             }
             if ($author_ids != "") {
-                array_push($search_string, 'authorId IN (' . $author_ids . ')');
+                $data = $data->whereIn("authorId", parseIdList($author_ids));
             }
             if ($start_date != "" && $end_date != "") {
-                array_push($search_string, "(publishDate >= '$start_date' AND publishDate <= '$end_date')");
+                $data = $data->where("publishDate", ">=", $start_date)->where("publishDate", "<=", $end_date);
             }
-            $where_str = (count($search_string) > 0 ? (implode(" and ", $search_string) . ($is_video ? " AND isVideo = 1" : "")) : ($is_video ? "isVideo = 1" : ""));
-            if ($where_str != "") {
-                $data = $data->whereRaw($where_str);
+            if ($is_video) {
+                $data = $data->where("isVideo", 1);
             }
             if ($sort_by != "") {
                 if ($sort_by == "DateDesc") {
@@ -1495,17 +1490,17 @@ class ArticleController extends Controller
             if ($type == "coupon") {
                 $data = CouponDetail::where("status", 1);
                 if ($search_keyword != "") {
-                    $data = $data->whereRaw('(heading like "%' . $search_keyword . '%" OR highlights like "%' . $search_keyword . '%" OR finePrints like "%' . $search_keyword . '%" OR detail like "%' . $search_keyword . '%" OR companyName like "%' . $search_keyword . '%" OR companyAddress like "%' . $search_keyword . '%" OR originalPrice like "%' . $search_keyword . '%" OR discountPrice like "%' . $search_keyword . '%" OR offerDetail like "%' . $search_keyword . '%")')->orderBy("id", "desc");
+                    $data = $data->whereAny(["heading", "highlights", "finePrints", "detail", "companyName", "companyAddress", "originalPrice", "discountPrice", "offerDetail"], "like", "%" . $search_keyword . "%");
                 }
             } else if ($type == "directory") {
                 $data = BusinessDetail::selectRaw("*");
                 if ($search_keyword != "") {
-                    $data = $data->whereRaw('(name like "%' . $search_keyword . '%" OR address1 like "%' . $search_keyword . '%" OR address2 like "%' . $search_keyword . '%" OR city like "%' . $search_keyword . '%" OR province like "%' . $search_keyword . '%" OR postalCode like "%' . $search_keyword . '%" OR country like "%' . $search_keyword . '%" OR about like "%' . $search_keyword . '%" OR email like "%' . $search_keyword . '%" OR phone like "%' . $search_keyword . '%" OR website like "%' . $search_keyword . '%")')->orderBy("id", "desc");
+                    $data = $data->whereAny(["name", "address1", "address2", "city", "province", "postalCode", "country", "about", "email", "phone", "website"], "like", "%" . $search_keyword . "%");
                 }
             } else if ($type == "event") {
                 $data = EventDetail::selectRaw("*");
                 if ($search_keyword != "") {
-                    $data = $data->whereRaw('(name like "%' . $search_keyword . '%" OR description like "%' . $search_keyword . '%" OR eventDate like "%' . $search_keyword . '%" OR eventTime like "%' . $search_keyword . '%" OR venue like "%' . $search_keyword . '%" OR venueAddress like "%' . $search_keyword . '%" OR venuePhone like "%' . $search_keyword . '%" OR organizerName like "%' . $search_keyword . '%")')->orderBy("eventDate", "asc");
+                    $data = $data->whereAny(["name", "description", "eventDate", "eventTime", "venue", "venueAddress", "venuePhone", "organizerName"], "like", "%" . $search_keyword . "%");
                 }
             }
             $total_records = $data->count();
@@ -1802,10 +1797,8 @@ class ArticleController extends Controller
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
                 $result = curl_exec($ch);
-                curl_close($ch);
                 echo json_encode($result);
             }
         } catch (\Exception $e) {
@@ -1847,18 +1840,21 @@ class ArticleController extends Controller
         $longitude = 0;
         $dist = 0.6;
         if (session("user_details")->allow_location_detection) {
-            $latitude = session("user_details")->latitude ?? 0;
-            $longitude = session("user_details")->longitude ?? 0;
+            $latitude = (float) (session("user_details")->latitude ?? 0);
+            $longitude = (float) (session("user_details")->longitude ?? 0);
         }
         $distance_query = "3956 * 2 *  ASIN(SQRT( POWER(SIN(($latitude - abs(latitude))*pi()/180/2),2)+COS( $latitude*pi()/180 )*COS(abs(latitude)*pi()/180)*POWER(SIN(($longitude-longitude)*pi()/180/2),2))) as distance";
 
         $select_query = "SELECT * FROM(SELECT advertisement_details.*,advertisement_file_details.imageName,advertisement_file_details.categoryId,$distance_query from advertisement_details left join advertisement_file_details on advertisement_details.id = advertisement_file_details.advertisementId WHERE advertisement_details.status = 1 and advertisement_file_details.advertisementFor = 'app' and advertisement_details.deleted_at IS NULL";
 
+        $bindings = array();
+        $id_not_allow = parseIdList($id_not_allow);
         if (count($id_not_allow) > 0) {
             $select_query .= " AND advertisement_details.id NOT IN (" . implode(",", $id_not_allow) . ")";
         }
         if ($category_id != "") {
-            $select_query .= " AND (FIND_IN_SET($category_id,advertisement_file_details.categoryId)  > 0)";
+            $select_query .= " AND (FIND_IN_SET(?,advertisement_file_details.categoryId)  > 0)";
+            $bindings[] = $category_id;
         }
         if ($image_type == "square") {
             $select_query .= " AND advertisement_file_details.position = 'square'";
@@ -1873,9 +1869,9 @@ class ArticleController extends Controller
             $select_query .= ' ORDER BY RAND()';
         }
         if ($limit != "") {
-            $select_query .= (' LIMIT ' . $limit);
+            $select_query .= (' LIMIT ' . (int) $limit);
         }
-        $data = DB::select($select_query);
+        $data = DB::select($select_query, $bindings);
         $advertisement_data = array();
         foreach ((count((array)$data) > 0 ? $data : array()) as $d) {
             $individual_ad = array("article_id" => "", "title" => "", "description" => "", "summary" => "", "heading" => "", "author_id" => "", "author_name" => "", "author_image_name" => "", "publish_date" => "", "vertical_image" => "", "landscape_image" => "", "image_caption" => "", "image_credit" => "", "video_file" => "", "source" => "", "is_bookmarked" => "", "is_read" => "", "category_id" => "", "category_name" => "", "parent_id" => "", "parent_name" => "", "is_video" => "", "video_type" => "", "video_duration" => "", "video_thumbnail_url" => "", "video_credit" => "", "youtube_url" => "", "video_html" => "", "article_type" => "", "last_updated" => "", "share_link" => "");

@@ -29,18 +29,23 @@ function generate_access_token($type, $user_id)
 }
 
 function get_feature_id($name)
-{   
-    
+{
     return cache()->remember("feature_id_{$name}", 60 * 60, function () use ($name) {
         $get_feature_id = ArticleFeatureDetail::select("id")->where("name", $name)->first();
         return $get_feature_id ? $get_feature_id->id : "0";
     });
-    
-    // $get_feature_id = ArticleFeatureDetail::select("id")->where("name", $name)->first();
-    // if ($get_feature_id) {
-    //     return $get_feature_id->id;
-    // }
-    // return "0";
+}
+
+/**
+ * Parse a comma-separated list (or array) of ids from a request into integers,
+ * dropping anything non-numeric, so it can be passed safely to whereIn().
+ */
+function parseIdList($value): array
+{
+    $values = is_array($value) ? $value : explode(",", (string) $value);
+    $values = array_filter(array_map("trim", array_filter($values, "is_scalar")), "is_numeric");
+
+    return array_values(array_map("intval", $values));
 }
 
 function get_category_id($name)
@@ -201,10 +206,8 @@ function sendNotificationAndroid($heading, $id, $title, $type, $category_id, $su
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
             curl_exec($ch);
-            curl_close($ch);
         }
     } catch (\Exception $e) {
         return $this->sendResultJSON("0", $e->getMessage());
@@ -230,7 +233,7 @@ function getAdvertisementData($image_type, $category_id = "")
         $join->on('advertisement_details.id', '=', 'advertisement_file_details.advertisementId');
     })->where("advertisement_details.status", 1)->where("advertisement_file_details.advertisementFor", "web");
     if ($category_id != "") {
-        $data = $data->whereRaw("(FIND_IN_SET($category_id,advertisement_file_details.categoryId)  > 0)");
+        $data = $data->whereRaw("(FIND_IN_SET(?,advertisement_file_details.categoryId)  > 0)", [$category_id]);
     }
     if ($image_type == "sidebar") {
         $data = $data->where("advertisement_file_details.position", "sidebar");
@@ -245,7 +248,7 @@ function getAdvertisementData($image_type, $category_id = "")
     return $data;
 }
 
-function getArticleDatahome($category_ids = [], $limit, $isfeature, $isslider, $istrending)
+function getArticleDatahome($category_ids, $limit, $isfeature, $isslider, $istrending)
 {
 
     $data = ArticleDetail::selectRaw("article_details.id,article_details.heading,article_details.categoryId,article_details.isVideo,article_details.publishDate,article_details.updated_at,article_details.featureId,article_details.categoryId,article_details.viewCount,article_details.created_at,article_file_details.articleId,article_file_details.fileName,article_file_details.duration,article_file_details.thumbnailImage,article_file_details.isMain")->leftJoin("article_file_details", function ($join) {
@@ -280,7 +283,7 @@ function getArticleDatahome($category_ids = [], $limit, $isfeature, $isslider, $
     return $data;
 }
 
-function getArticlelist($category_ids = [], $limit, $article_ids = array(),$offset = 0)
+function getArticlelist($category_ids, $limit, $article_ids = array(),$offset = 0)
 {
 
     $data = ArticleDetail::selectRaw("article_details.id,article_details.heading,article_details.categoryId,article_details.isVideo,article_details.publishDate,article_details.updated_at,article_details.created_at,article_file_details.articleId,article_file_details.fileName,article_file_details.duration,article_file_details.thumbnailImage,article_file_details.isMain")->leftJoin("article_file_details", function ($join) {
@@ -342,15 +345,19 @@ function getRelatedArticles($business_id, $name)
 {
     $business_categories = BusinessCategoryDetail::where("businessId", $business_id)->get();
     $articles = ArticleDetail::where("status", 1)->where("isVideo", 0);
-    $category = $find_in_array = array();
+    $category = array();
     foreach (count((array)$business_categories) > 0 ? $business_categories : array() as $bc) {
         if ($bc->categoryDetail) {
             $cat_name = $bc->categoryDetail->name;
             array_push($category, $cat_name);
-            array_push($find_in_array, "(FIND_IN_SET('" . addslashes($cat_name) . "',REPLACE(metaTag,';',',')) > 0) OR (description like '%" . addslashes($cat_name) . "%')");
         }
     }
-    $articles = $articles->whereRaw("(" . implode(" OR ", $find_in_array) . " OR (FIND_IN_SET('" . addslashes($name) . "',REPLACE(metaTag,';',',')) > 0) OR (description like '%" . addslashes($name) . "%'))");
+    $search_terms = array_merge($category, [$name]);
+    $articles = $articles->where(function ($query) use ($search_terms) {
+        foreach ($search_terms as $term) {
+            $query->orWhereRaw("FIND_IN_SET(?,REPLACE(metaTag,';',',')) > 0", [$term])->orWhere("description", "like", "%" . $term . "%");
+        }
+    });
     $articles = $articles->orderBy("publishDate", "desc")->take(10)->get();
     return array("article" => $articles, "category" => $category);
 }

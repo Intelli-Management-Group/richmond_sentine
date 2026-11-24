@@ -32,7 +32,7 @@ class AuthorController extends Controller
             $author_data_array = array();
             $author_data = AuthorDetail::whereRaw("1");
             if ($search_value != "") {
-                $author_data = $author_data->whereRaw("(name like'%" . $search_value . "%')");
+                $author_data = $author_data->where("name", "like", "%" . $search_value . "%");
             }
             $total_author = $author_data->count();
             $author_data = $author_data->skip($start)->take($end)->get();
@@ -81,7 +81,7 @@ class AuthorController extends Controller
         if (!$data) {
             return view("errors.404");
         }
-        return view('author/insert', compact('data', 'title'));
+        return view('author/insert', compact('data'));
     }
     public function updateAuthor(Request $request)
     {

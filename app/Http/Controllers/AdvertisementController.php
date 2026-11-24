@@ -50,7 +50,7 @@ class AdvertisementController extends Controller
             }
             $advertisement_data = AdvertisementDetail::orderBy("publishDate", $sort_order);
             if ($search_value != "") {
-                $advertisement_data = $advertisement_data->whereRaw("(link like '%" . $search_value . "%' OR name like '%" . $search_value . "%')");
+                $advertisement_data = $advertisement_data->whereAny(["link", "name"], "like", "%" . $search_value . "%");
             }
             $total_ads = $advertisement_data->count();
             $advertisement_data = $advertisement_data->skip($start)->take($end)->get();
@@ -76,7 +76,6 @@ class AdvertisementController extends Controller
                     "action" => '<span class="editicn"><a href="' . (url("edit-advertisement") . "/" . $a->id) . '"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></span><span class="deleteicn"><a onclick="javascript:deleteAdvertisement(' . $a->id . ')"><i class="fa fa-trash" aria-hidden="true"></i></a></span>' . $publish_button,
                 ));
             }
-            
             return json_encode(array(
                 "draw" => isset($request['draw']) ? intval($request['draw']) : 0,
                 "data" => $advertisement_data_array,
@@ -211,7 +210,6 @@ class AdvertisementController extends Controller
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array("location" => $address)));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $content  = curl_exec($ch);
-                curl_close($ch);
 
                 if ($content != "") {
                     $content_array = json_decode($content);
@@ -276,8 +274,6 @@ class AdvertisementController extends Controller
             if (!$ad_data) {
                 return view("errors.404");
             }
-            
-            
             $category_array = $this->loadAdvertisementCategory();
             $web_category_data_array = $category_array["web_category_data_array"];
             $app_category_data_array = $category_array["app_category_data_array"];
@@ -315,19 +311,14 @@ class AdvertisementController extends Controller
                     $advertisement_data["image_category"][$af->position] = ($af->categoryId == implode(",", array_keys($app_category_data_array)) ? $af->categoryId : explode(",", $af->categoryId));
                 }
             }
-            
-            
-            
             return view("advertisement.add", compact("web_category_data_array", "app_category_data_array", "advertisement_data"));
         } catch (\Exception $e) {
-
             return $e->getMessage();
         }
     }
 
     public function updateAdvertisement(Request $request)
     {
-        
         try {
             $advertisement_id = $request->input("advertisement_id");
             if ($advertisement_id == "") {
@@ -431,7 +422,6 @@ class AdvertisementController extends Controller
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array("location" => $address)));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $content  = curl_exec($ch);
-                curl_close($ch);
 
                 if ($content != "") {
                     $content_array = json_decode($content);

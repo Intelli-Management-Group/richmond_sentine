@@ -16,7 +16,6 @@ use App\Models\FooterContentDetail;
 use App\Models\UserwiseStepsDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 
 class HomeController extends Controller
@@ -224,8 +223,7 @@ class HomeController extends Controller
 
     public function searchList()
     {
-        $searchvalue = request()->get('searchvalue');
-        $searchvalue = trim($searchvalue);
+        $searchvalue = trim((string) request("searchvalue"));
         $searchvalue = strtolower($searchvalue);
 
 
@@ -240,9 +238,7 @@ class HomeController extends Controller
         $ad_sidebar = getAdvertisementData("sidebar");
         $ad_sidebar_responsive = getAdvertisementData("sidebar_responsive");
         if ($searchvalue != "") {
-            $encoded_search_value = str_replace("'", "''", $searchvalue);
-            $encoded_search_value = str_replace('"', '""', $encoded_search_value);
-            $article_list = $article_data->whereRaw("(article_details.heading like '%" . $encoded_search_value . "%' OR article_details.description like '%" . $encoded_search_value . "%'  OR article_details.summary like '%" . $encoded_search_value . "%' OR category_details.name like '%" . $encoded_search_value . "%' OR author_details.name like '%" . $encoded_search_value . "%')")->paginate(10);
+            $article_list = $article_data->whereAny(["article_details.heading", "article_details.description", "article_details.summary", "category_details.name", "author_details.name"], "like", "%" . $searchvalue . "%")->paginate(10);
             if (count((array)$article_list) == 0) {
                 $msg = "Search Data Not Found";
                 return view('frontend.searchlist', compact('msg', 'ad_sidebar', 'ad_sidebar_responsive'));
@@ -286,15 +282,12 @@ class HomeController extends Controller
     public function getBusinessData()
     {
         $search_str = request("search_string");
-        if ($search_str != "") {
-            $search_str = addslashes($search_str);
-        }
         $all_categories = BusinessCategory::where("isActive", 1)->orderBy("name", "asc")->get();
         $categories = $alphabetical_categories = $featured = array();
         foreach (count((array)$all_categories) > 0 ? $all_categories : array() as $c) {
             $business_details = BusinessCategoryDetail::join("business_details", "business_details.id", "=", "business_category_details.businessId")->selectRaw("business_details.*")->where("business_category_details.categoryId", $c->id)->whereRaw("business_details.deleted_at is null");
             if ($search_str != "") {
-                $business_details = $business_details->whereRaw("business_details.name like '%" . $search_str . "%'");
+                $business_details = $business_details->where("business_details.name", "like", "%" . $search_str . "%");
             }
             $business_details = $business_details->get();
             $businesses = array();
@@ -321,7 +314,7 @@ class HomeController extends Controller
         }
         $featured_business = BusinessDetail::where("isFeatured", 1);
         if ($search_str != "") {
-            $featured_business = $featured_business->whereRaw("name like '%" . $search_str . "%'");
+            $featured_business = $featured_business->where("name", "like", "%" . $search_str . "%");
         }
         $featured_business = $featured_business->get();
         foreach (count((array)$featured_business) > 0 ? $featured_business : array() as $f) {
@@ -348,7 +341,7 @@ class HomeController extends Controller
                 array_push($business_categories, $c->categoryDetail->name);
             }
         }
-        $business_hours = json_decode($business_data->businessHours);
+        $business_hours = json_decode($business_data->businessHours ?? "");
         $related_articles = getRelatedArticles($business_data->id, $business_data->name)["article"];
         $events = EventDetail::where("businessId", $business_data->id)->get();
         $event_array = array();
@@ -370,7 +363,7 @@ class HomeController extends Controller
     public function getAllBusiness(Request $request)
     {
         $data = array();
-        $all_business = BusinessDetail::whereRaw("name LIKE '%" . $request->input('term') . "%'")->get();
+        $all_business = BusinessDetail::where("name", "like", "%" . $request->input("term") . "%")->get();
         foreach (count((array)$all_business) > 0 ? $all_business : array() as $b) {
             $single_data = "<div class='d-flex'><div class='w-5 text-center'><img src='" . getBusinessImage($b->logo) . "' alt='$b->name' class='business-logo-small'/></div><div class='ml-3'><strong>$b->name</strong><div>" . getBusinessAddress($b) . "</div></div></div>";
             array_push($data, array("shortCode" => $b->shortCode, "value" => $b->name, "label" => $single_data));
@@ -387,7 +380,7 @@ class HomeController extends Controller
     {
         $data = array();
         $search_date = \request("event_date") ?? Carbon::now()->format("Y-m-d");
-        $events = EventDetail::whereRaw('DATE_FORMAT(`eventDate`, "%Y-%m") = "' . Carbon::parse($search_date)->format("Y-m") . '" AND eventDate >= "' . $search_date . '"')->orderBy("eventDate", "asc")->orderBy("eventTime", "asc")->get();
+        $events = EventDetail::whereRaw('DATE_FORMAT(`eventDate`, "%Y-%m") = ? AND eventDate >= ?', [Carbon::parse($search_date)->format("Y-m"), $search_date])->orderBy("eventDate", "asc")->orderBy("eventTime", "asc")->get();
 
         if (Carbon::parse($search_date)->isCurrentYear() && Carbon::parse($search_date)->isCurrentMonth()) {
             $today_date = Carbon::now()->format("Y-m-d");

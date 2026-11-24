@@ -142,7 +142,7 @@ class EventController extends Controller
             }
             $event_data = EventDetail::selectRaw("id,name,description,eventDate,eventTime,venue,venueAddress,categoryId,bannerImage");
             if ($search_value != "") {
-                $event_data = $event_data->whereRaw("(name like '%" . $search_value . "%' OR description like '%" . $search_value . "%' OR eventDate like '%" . $search_value . "%' OR venue like '%" . $search_value . "%' OR venueAddress like '%" . $search_value . "%')");
+                $event_data = $event_data->whereAny(["name", "description", "eventDate", "venue", "venueAddress"], "like", "%" . $search_value . "%");
             }
             $total_events = $event_data->count();
             $event_data = $event_data->orderBy($sort_column_name, $sort_order);

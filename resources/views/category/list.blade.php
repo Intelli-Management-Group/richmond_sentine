@@ -38,18 +38,18 @@
                                     <ul class="tree">
                                         @foreach (count($category_data_array) > 0 ? $category_data_array : array() as $key => $value)
                                         <li class="has">
-                                            <input type="radio" name="parentId[]" value="{!! $key !!}" {!! (is_array(old('parentId')) && isset(old('parentId')[0]) && old('parentId')[0] == $key ? "checked" : "" ) !!}>
+                                            <input type="radio" name="parentId[]" value="{!! $key !!}" {!! ((old('parentId')[0] ?? null)==$key ? "checked" : "" ) !!}>
                                             <label>{!! $value['name'] !!}</label> @if (count($value['child_list']) > 0)
                                             <ul>
                                                 @foreach (count($value['child_list']) > 0 ? $value['child_list'] : array() as $ckey => $cvalue)
                                                 <li class="has">
-                                                    <input type="radio" name="parentId[]" value="{!! $ckey !!}" {!! (is_array(old('parentId')) && isset(old('parentId')[0]) && old('parentId')[0] == $key ? "checked" : "" ) !!} >
+                                                    <input type="radio" name="parentId[]" value="{!! $ckey !!}" {!! ((old('parentId')[0] ?? null)==$ckey ? "checked" : "" ) !!}>
                                                     <label>{!! $cvalue['name'] !!}</label> @if (count($cvalue['child_list'])
                                                     > 0)
                                                     <ul>
                                                         @foreach (count($cvalue['child_list']) > 0 ? $cvalue['child_list'] : array() as $lkey => $lvalue)
                                                         <li>
-                                                            <input type="radio" name="parentId[]" value="{!! $lkey !!}" {!! (is_array(old('parentId')) && isset(old('parentId')[0]) && old('parentId')[0] == $key ? "checked" : "" ) !!}>
+                                                            <input type="radio" name="parentId[]" value="{!! $lkey !!}" {!! ((old('parentId')[0] ?? null)==$lkey ? "checked" : "" ) !!}>
                                                             <label>{!! $lvalue['name'] !!}</label>
                                                         </li>
                                                         @endforeach

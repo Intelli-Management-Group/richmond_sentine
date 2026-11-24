@@ -168,7 +168,7 @@ class BusinessController extends Controller
             }
             $business_data = BusinessDetail::selectRaw("*");
             if ($search_value != "") {
-                $business_data = $business_data->whereRaw("(name like '%" . $search_value . "%' OR address1 like '%" . $search_value . "%' OR address2 like '%" . $search_value . "%' OR city like '%" . $search_value . "%' OR province like '%" . $search_value . "%' OR postalCode like '%" . $search_value . "%' OR country like '%" . $search_value . "%' OR email like '%" . $search_value . "%' OR phone like '%" . $search_value . "%' OR website like '%" . $search_value . "%')");
+                $business_data = $business_data->whereAny(["name", "address1", "address2", "city", "province", "postalCode", "country", "email", "phone", "website"], "like", "%" . $search_value . "%");
             }
             $total_business = $business_data->count();
             $business_data = $business_data->orderBy($sort_column_name, $sort_order);
@@ -232,7 +232,7 @@ class BusinessController extends Controller
             }
             $business_data = UserwiseBusinessDetail::selectRaw("*");
             if ($search_value != "") {
-                $business_data = $business_data->whereRaw("(name like '%" . $search_value . "%' OR address1 like '%" . $search_value . "%' OR address2 like '%" . $search_value . "%' OR city like '%" . $search_value . "%' OR province like '%" . $search_value . "%' OR postalCode like '%" . $search_value . "%' OR country like '%" . $search_value . "%' OR email like '%" . $search_value . "%' OR phone like '%" . $search_value . "%' OR website like '%" . $search_value . "%')");
+                $business_data = $business_data->whereAny(["name", "address1", "address2", "city", "province", "postalCode", "country", "email", "phone", "website"], "like", "%" . $search_value . "%");
             }
             $total_business = $business_data->count();
             $business_data = $business_data->orderBy($sort_column_name, $sort_order);
@@ -371,7 +371,6 @@ class BusinessController extends Controller
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array("location" => $business_address)));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $content = curl_exec($ch);
-                curl_close($ch);
 
                 if ($content != "") {
                     $content_array = json_decode($content);
@@ -597,7 +596,6 @@ class BusinessController extends Controller
                     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array("location" => $business_address)));
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     $content = curl_exec($ch);
-                    curl_close($ch);
 
                     if ($content != "") {
                         $content_array = json_decode($content);

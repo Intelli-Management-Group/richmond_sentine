@@ -117,7 +117,7 @@ class BusinessController extends Controller
             $data = array();
             $search_date = $request->input("event_date") ?? Carbon::now()->format("Y-m");
             $start_date = $request->input("start_date") ?? Carbon::now()->format("Y-m-d");
-            $events = EventDetail::whereRaw('DATE_FORMAT(`eventDate`, "%Y-%m") = "' . $search_date . '" AND eventDate >= "' . $start_date . '"')->orderBy("eventDate", "asc")->orderBy("eventTime", "asc")->get();
+            $events = EventDetail::whereRaw('DATE_FORMAT(`eventDate`, "%Y-%m") = ? AND eventDate >= ?', [$search_date, $start_date])->orderBy("eventDate", "asc")->orderBy("eventTime", "asc")->get();
             foreach (count((array)$events) > 0 ? $events : array() as $e) {
                 if (!isset($data[$e->eventDate])) {
                     $data[$e->eventDate] = array("date" => $e->eventDate, "data" => array());

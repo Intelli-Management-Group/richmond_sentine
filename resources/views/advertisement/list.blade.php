@@ -3,16 +3,12 @@
 @extends('common.nav')
 
 @section('content')
-
-
 <ol class="breadcrumb breadcrumb-quirk">
     <li><a href="{!! url('dashboard') !!}"><i class="fa fa-home mr5"></i> Home</a></li>
     <li class="active">Advertisement List</li>
 </ol>
 <div class="row">
     <div class="col-md-12">
-        
-        
         @if(session()->has('success'))
         <div class="alert alert-success" id="successMessage">
             {!! session('success') !!}
@@ -22,7 +18,6 @@
             {!! session('error') !!}
         </div>
         @endif
-        
         <div class="panel advertisement_container">
             <div class="panel-heading browsebtn-sec">
                 <h2>Advertisement List</h2>
@@ -36,8 +31,6 @@
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    
-                    
                     <table class="table table-bordered table-striped-col data_table_list" data-url="{{ url('advertisement-list') }}" data-page-size="{{ config('constants.pagination_limit') }}" data-ordering="true">
                         <thead>
                             <tr>
@@ -65,7 +58,6 @@
 <link rel="stylesheet" href="{{ asset('css/advertisement.css').'?t='.Carbon\Carbon::now()->timestamp }}">
 <script type="text/javascript">
     $(document).ready(function() {
-        
         applyDataTable(true);
     });
 

@@ -25,6 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'APIToken' => \App\Http\Middleware\APIToken::class
         ]);
 
+        $middleware->append(\App\Http\Middleware\RejectUnsafeUploads::class);
+
         $middleware->validateCsrfTokens(except: [
             '*'
         ]);

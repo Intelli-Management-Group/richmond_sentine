@@ -49,7 +49,7 @@ class EditionController extends Controller
             }
             $edition_data = DigitalEditionDetail::orderBy("publishDate", $sort_order);
             if ($search_value != "") {
-                $edition_data = $edition_data->whereRaw("(volumeEdition like '%" . $search_value . "%' OR name like '%" . $search_value . "%' OR editionNumber like '%" . $search_value . "%')");
+                $edition_data = $edition_data->whereAny(["volumeEdition", "name", "editionNumber"], "like", "%" . $search_value . "%");
             }
             $total_editions = $edition_data->count();
             $edition_data = $edition_data->skip($start)->take($end)->get();
@@ -151,7 +151,7 @@ class EditionController extends Controller
                 $thumbnail_name = ($data->id . ".png");
                 $output = $response = "";
 
-                exec('gs -sDEVICE=jpeg -dFirstPage=1 -dLastPage=1 -o '.($destination_path . "/" . $thumbnail_name).' '.$pathToPdf);
+                exec('gs -sDEVICE=jpeg -dFirstPage=1 -dLastPage=1 -o ' . escapeshellarg($destination_path . "/" . $thumbnail_name) . ' ' . escapeshellarg($pathToPdf));
 
                 $data->thumbnailImage = $thumbnail_name;
                 $data->save();

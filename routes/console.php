@@ -17,11 +17,3 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
-
-// Artisan::command('article:delete', function () {
-//     $this->call('article:delete');
-// })->describe('Delete expired articles and their files');
-
-// Artisan::command('unpublish:advertisement', function () {
-//     $this->call('unpublish:advertisement');
-// })->describe('Unpublish expired advertisements');
