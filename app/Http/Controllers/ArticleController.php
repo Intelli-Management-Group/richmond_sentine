@@ -309,9 +309,8 @@ class ArticleController extends Controller
             $data->description = $request->input("description");
             $data->summary = $request->input("summary");
             $data->heading = $request->input("heading");
-            if ($request->input("featureId") != null) {
-                $data->featureId = implode(",", $request->input("featureId"));
-            }
+            // No boxes ticked means the form sends no featureId, so that has to clear the features.
+            $data->featureId = implode(",", (array) $request->input("featureId", []));
             $data->authorId = $request->input("authorId");
             $data->categoryId = $request->input("categoryId")[0];
             if ($article_id == null) {
