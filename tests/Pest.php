@@ -43,9 +43,9 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function createCategory(string $name, ?int $parentId = null): int
+function createCategory(string $name, ?int $parentId = null, array $attributes = []): int
 {
-    return DB::table('category_details')->insertGetId([
+    return DB::table('category_details')->insertGetId(array_merge([
         'name' => $name,
         'parentId' => $parentId,
         'level' => $parentId ? 1 : 0,
@@ -53,7 +53,7 @@ function createCategory(string $name, ?int $parentId = null): int
         'isCouponCategory' => 0,
         'created_at' => now(),
         'updated_at' => now(),
-    ]);
+    ], $attributes));
 }
 
 function createFeature(string $name): int
@@ -67,8 +67,9 @@ function createFeature(string $name): int
 
 /**
  * A published article with the main image the listing queries join on.
+ * $mainMedia sets how many isMain rows it gets (0 = none, 2 = the duplicate some live articles have).
  */
-function createArticle(array $attributes = []): int
+function createArticle(array $attributes = [], int $mainMedia = 1): int
 {
     $id = DB::table('article_details')->insertGetId(array_merge([
         'heading' => 'Test article',
@@ -80,15 +81,30 @@ function createArticle(array $attributes = []): int
         'updated_at' => now(),
     ], $attributes));
 
-    DB::table('article_file_details')->insert([
-        'articleId' => $id,
-        'fileName' => 'test.jpg',
-        'isMain' => 1,
+    for ($i = 0; $i < $mainMedia; $i++) {
+        DB::table('article_file_details')->insert([
+            'articleId' => $id,
+            'fileName' => 'test.jpg',
+            'isMain' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    return $id;
+}
+
+/**
+ * The Authorization header value the app sends, for a new app user.
+ */
+function appToken(): string
+{
+    $userId = DB::table('app_user_details')->insertGetId([
         'created_at' => now(),
         'updated_at' => now(),
     ]);
 
-    return $id;
+    return generate_access_token('app', $userId);
 }
 
 function createVideo(array $attributes = []): int
