@@ -41,6 +41,18 @@ it('returns the website category page for a parent category', function () {
         ->and($list)->toBe(array_slice($page->viewData('articles')->pluck('id')->all(), 0, count($list)));
 });
 
+it('defaults the slider to 5 for app builds that send no top_article_count', function () {
+    $featured = createFeature('Featured');
+    $community = createCategory('Community');
+    $arts = createCategory('Arts & Culture', $community);
+    foreach (range(1, 9) as $day) {
+        createArticle(['categoryId' => $arts, 'featureId' => (string) $featured, 'publishDate' => "2026-11-0{$day} 10:00:00"]);
+    }
+
+    expect(categoryFeed($community)->json('top_five_articles'))->toHaveCount(5)
+        ->and(categoryFeed($community, ['top_article_count' => 8])->json('top_five_articles'))->toHaveCount(8);
+});
+
 it('lists slider articles too, as the website category page does', function () {
     [$community, , $ids] = communityWithArticles();
 

@@ -37,6 +37,12 @@ use Twilio\Rest\Client as Tclient;
 class ArticleController extends Controller
 {
     /**
+     * Slider size (top_five_articles) when the app sends no top_article_count.
+     * The website slider holds 8, but app builds already in use show 5.
+     */
+    private const APP_SLIDER_COUNT = 5;
+
+    /**
      *  Method to get category wise article data
      *
      * @return \Illuminate\Http\JsonResponse
@@ -164,7 +170,7 @@ class ArticleController extends Controller
             }
             $ad_display_index = config("constants.advertisement_index");
             $page = (int)request("active_page");
-            $top_record_count = request("top_article_count") ? (int)request("top_article_count") : WebsiteFeed::CATEGORY_SLIDER_LIMIT;
+            $top_record_count = request("top_article_count") ? (int)request("top_article_count") : self::APP_SLIDER_COUNT;
             $total_records = (int)request("total_records");
             $id_not_display = (request("ad_ids") ? explode(",", request("ad_ids")) : array());
             $website_feed = app(WebsiteFeed::class);
@@ -254,7 +260,7 @@ class ArticleController extends Controller
                 return $this->sendResultJSON("11", "Unauthorised");
             }
             $page = (int)request("active_page");
-            $top_record_count = request("top_article_count") ? (int)request("top_article_count") : WebsiteFeed::HOME_SLIDER_LIMIT;
+            $top_record_count = request("top_article_count") ? (int)request("top_article_count") : self::APP_SLIDER_COUNT;
             $total_records = (int)request("total_records");
             $id_not_display = (request("ad_ids") ? explode(",", request("ad_ids")) : array());
             $website_feed = app(WebsiteFeed::class);

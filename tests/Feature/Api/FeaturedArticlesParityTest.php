@@ -26,13 +26,14 @@ it('puts the website home slider in top_five_articles', function () {
         ->and(articleIds(homeFeed(['top_article_count' => 1])->json('top_five_articles')))->toBe([$a]);
 });
 
-it('defaults the slider to the website size of 8', function () {
+it('defaults the slider to 5 for app builds that send no top_article_count', function () {
     $slider = createFeature('Slider');
     foreach (range(1, 9) as $day) {
         createArticle(['featureId' => (string) $slider, 'publishDate' => "2026-11-0{$day} 10:00:00"]);
     }
 
-    expect(homeFeed()->json('top_five_articles'))->toHaveCount(WebsiteFeed::HOME_SLIDER_LIMIT);
+    expect(homeFeed()->json('top_five_articles'))->toHaveCount(5)
+        ->and(homeFeed(['top_article_count' => 8])->json('top_five_articles'))->toHaveCount(8);
 });
 
 it('leaves slider articles out of featured_articles', function () {
