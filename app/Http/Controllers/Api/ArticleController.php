@@ -18,6 +18,7 @@ use App\Models\UserCategoryNotificationDetail;
 use App\Models\UserwiseArticleBookmarkDetail;
 use App\Models\UserwiseArticleReadDetail;
 use App\Models\UserwiseStepsDetail;
+use App\Services\WebsiteFeed;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Pushok\AuthProvider;
@@ -257,9 +258,10 @@ class ArticleController extends Controller
                 return $this->sendResultJSON("11", "Unauthorised");
             }
             $page = (int)request("active_page");
-            $top_record_count = request("top_article_count") ? (int)request("top_article_count") : 5;
+            $top_record_count = request("top_article_count") ? (int)request("top_article_count") : WebsiteFeed::HOME_SLIDER_LIMIT;
             $total_records = (int)request("total_records");
             $id_not_display = (request("ad_ids") ? explode(",", request("ad_ids")) : array());
+            $website_feed = app(WebsiteFeed::class);
 
             $ad_display_index = config("constants.advertisement_index");
             $start_index = (($page * $total_records) - $total_records) + 1;
@@ -277,20 +279,13 @@ class ArticleController extends Controller
             $user_id = session("user_details")->id;
             $get_feature_id = get_feature_id("Featured");
 
-            $featured_category_data = CategoryDetail::select("id")->where("name", "Top Stories")->where("level", 0)->first();
-            $category_id = "";
-            if ($featured_category_data) {
-                $category_id = $featured_category_data->id;
-            }
-
+            // The slider is the website home slider; its articles are left out of the list below.
             $top_article_details = array();
-            $id_to_skip = array();
-            $top_article_data = ArticleDetail::whereRaw("FIND_IN_SET($get_feature_id,featureId) > 0")->where("isVideo", 0)->where("status", 1)->take($top_record_count)->orderBy("publishDate", "desc")->get();
-            foreach (count((array)$top_article_data) > 0 ? $top_article_data : array() as $t) {
-                if ($page == 1) {
+            $id_to_skip = $website_feed->homeSliderIds($top_record_count);
+            if ($page == 1) {
+                foreach ($website_feed->load($id_to_skip) as $t) {
                     array_push($top_article_details, $this->itereateArticleData($t, $user_id));
                 }
-                array_push($id_to_skip, $t->id);
             }
 
             $featured_article_data = ArticleDetail::whereRaw("FIND_IN_SET($get_feature_id,featureId) > 0")->where("isVideo", 0)->where("status", 1)->whereNotIn("id", $id_to_skip);
@@ -334,7 +329,23 @@ class ArticleController extends Controller
                 $banner_images = $this->getAdvertisementData("", "", array(), "banner");
             }
             $article_data = array_values(array_filter($article_data));
-            return $this->sendResultJSON("1", (count($article_data) > 0 ? "" : "No article(s) found."), array("total_records" => $total_featured_article, "top_five_articles" => $top_article_details, "featured_articles" => $article_data, "advertisement_ids" => $id_not_display, "advertisement_data" => array("square" => $square_images, "banner" => $banner_images)));
+
+            // The website home page's "Latest News" ticker and Community, Canada and International blocks.
+            $latest_news = array();
+            $home_sections = array();
+            if ($page == 1) {
+                foreach ($website_feed->load($website_feed->latestNewsIds()) as $l) {
+                    array_push($latest_news, $this->itereateArticleData($l, $user_id));
+                }
+                foreach ($website_feed->homeSections() as $section) {
+                    $section_articles = array();
+                    foreach ($website_feed->load($section["article_ids"]) as $s) {
+                        array_push($section_articles, $this->itereateArticleData($s, $user_id));
+                    }
+                    array_push($home_sections, array("category_id" => $section["category_id"], "name" => $section["name"], "articles" => $section_articles));
+                }
+            }
+            return $this->sendResultJSON("1", (count($article_data) > 0 ? "" : "No article(s) found."), array("total_records" => $total_featured_article, "top_five_articles" => $top_article_details, "featured_articles" => $article_data, "latest_news" => $latest_news, "home_sections" => $home_sections, "advertisement_ids" => $id_not_display, "advertisement_data" => array("square" => $square_images, "banner" => $banner_images)));
         } catch (\Exception $e) {
             return $this->sendResultJSON("0", $e->getMessage());
         }
