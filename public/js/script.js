@@ -22,53 +22,13 @@ $(function () {
         return false;
     });
 
-    $(".video-play-pause")
-        .find("i")
-        .click(function (e) {
-            $(".video-inner")
-                .find("video")
-                .each(function () {
-                    $(this)
-                        .get(0)
-                        .pause();
-                });
-            e.preventDefault();
-            if ($(this).hasClass("fa-play-circle-o")) {
-                $(this)
-                    .parents("a")
-                    .find(".video-throbber")
-                    .removeClass("hidden");
-                $(this)
-                    .parents("a")
-                    .find("video")
-                    .get(0)
-                    .play();
-                $(this)
-                    .removeClass("fa-play-circle-o")
-                    .addClass("fa-pause-circle-o");
-            } else if ($(this).hasClass("fa-pause-circle-o")) {
-                $(this)
-                    .parents("a")
-                    .find("video")
-                    .get(0)
-                    .pause();
-                $(this)
-                    .removeClass("fa-pause-circle-o")
-                    .addClass("fa-play-circle-o");
-            }
-        });
     $(".video-inner").each(function () {
         var video_tag = $("video", this);
         $(video_tag).attr(
             "height",
             Math.floor($(video_tag).width()) / 2 + "px"
         );
-        $(video_tag).on("canplay", function () {
-            $(this)
-                .next(".video-throbber")
-                .addClass("hidden");
-        });
-    });     
+    });
 
     var height = $("#detail").height();
     var treheight = $(".trendingnews").outerHeight();

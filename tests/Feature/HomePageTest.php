@@ -12,6 +12,17 @@ it('shows both uploaded and YouTube videos in the video section', function () {
         ->not->toContain($unpublishedId);
 });
 
+it('links video carousel cards to the video page instead of playing inline', function () {
+    $youtubeId = createVideo(['heading' => 'YouTube video', 'isYoutubeVideo' => 1, 'videoFile' => null, 'videoThumbnail' => 'yt.jpg']);
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('href="'.url('/videos', [$youtubeId, 'youtube-video']).'"', false)
+        ->assertSee('uploads/video_thumbnail/yt.jpg', false)
+        ->assertDontSee('<video', false)
+        ->assertDontSee('video-play-pause', false);
+});
+
 it('clamps long card titles so the publish date still shows', function () {
     $categoryId = createCategory('International');
     $heading = 'Prime Minister Carney strengthens Canada’s alliance with Europe at the Summit of the European Political Community';
