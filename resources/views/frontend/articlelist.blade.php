@@ -208,7 +208,6 @@
                         <p>If you are reading this, it is because your browser does not support the HTML5 video element.
                         </p>
                     </video>
-                    <div class="video-throbber hidden"><i class="fa fa-spinner fa-lg fa-spin" aria-hidden="true"></i></div>
                     <div class="video-btn">{!! $video->videoDuration !!}</div>
                     <div class="video-play-pause"><i class="fa fa-play-circle-o fa-lg" aria-hidden="true"></i></div>
                 </a>

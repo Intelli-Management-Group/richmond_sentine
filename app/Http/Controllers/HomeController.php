@@ -59,10 +59,8 @@ class HomeController extends Controller
         $get_slider_id = get_feature_id("Slider");
         $top_slider = getArticleDatahome([], 8, "false", "true", "false");
         // ArticleDetail::select("id", "heading", "landscapeImage","videoThumbnail", "videoFile")->where('status', 1)->where('isVideo', 0)->whereRaw('FIND_IN_SET('.$get_slider_id.',featureId) > 0')->orderBy('publishDate', 'desc')->take(8)->get();
-        if (count((array)$top_slider) == 0) {
-            $get_feature_id = get_feature_id("Featured");
+        if ($top_slider->isEmpty()) {
             $top_slider = getArticleDatahome([], 8, "true", "false", "false");
-            ArticleDetail::select("id", "heading", "landscapeImage", "videoThumbnail", "videoFile")->where('status', 1)->where('isVideo', 0)->whereRaw('FIND_IN_SET(' . $get_feature_id . ',featureId) > 0')->orderBy('publishDate', 'desc')->take(8)->get();
         }
 
         $latest_news = ArticleDetail::select("id", "heading")->orderBy('publishDate', 'desc')->where('status', 1)->where('isVideo', 0)->take(5)->get();
@@ -78,31 +76,31 @@ class HomeController extends Controller
         foreach (!$sub_category_data->isEmpty() ? $sub_category_data : array() as $sc) {
             array_push($category_ids, $sc->id);
         }
-        
+
         $community_news = getArticlelist($category_ids, 14, array());
         $more_community_news = getArticlelist($category_ids, 10, array(),4);
 
-        
+
         $category_id_canada = get_category_id("Canada");
         $sub_category_data = CategoryDetail::select("id")->where("parentId", $category_id_canada)->where('isDisplayInFrontend', 1)->get();
         $category_ids = array();
         foreach (!$sub_category_data->isEmpty() ? $sub_category_data : array() as $sc) {
             array_push($category_ids, $sc->id);
         }
-        
+
         $canada_news = getArticlelist($category_ids, 14, array());
         $more_canada_news = getArticlelist($category_ids, 10, array(),4);
 
         $category_id_international = get_category_id("International");
-        
+
         $international_news = getArticlelist(array($category_id_international), 14, array());
         $more_international_news = getArticlelist(array($category_id_international), 10, array(),4);
 
-        
+
 
         $trending = getArticleDatahome([], 56, "false", "false", "true");
         // dd($trending);
-        $videos = ArticleDetail::select("id", "heading", "videoThumbnail", "videoFile", "videoDuration")->where('isVideo', 1)->where('status', 1)->where('isYoutubeVideo', 0)->orderBy('publishDate', 'desc')->take(10)->get();
+        $videos = ArticleDetail::select("id", "heading", "videoThumbnail", "videoFile", "videoDuration")->where('isVideo', 1)->where('status', 1)->orderBy('publishDate', 'desc')->take(10)->get();
         $coupons = CouponDetail::all(["id", "heading", "companyName", "thumbnailImage", "originalPrice", "discountPrice"])->take(10);
         $category_data_array = get_category_data();
 
@@ -399,7 +397,7 @@ class HomeController extends Controller
         $view = view("frontend.upcomingEvent", compact("data"))->render();
         return json_encode(array("data" => $data, "view" => $view));
     }
-    
+
      public function loadElectionPage(){
         $mayor_tab = array('2022 City of Richmond Election for Mayor – Malcolm Brodie' => 'Gg1MOna_PjU', '2022 City of Richmond Election for Mayor - John Roston' => "Nqd-bIgjYxY");
         $councillor_tab = array(
@@ -448,7 +446,7 @@ class HomeController extends Controller
         );
         return view('frontend.election2022', compact('mayor_tab','councillor_tab','trustee_tab'));
     }
-    
+
     public function loadNewElectionPage($type = 'city')
     {
        $city_2022_mayor_tab = array('2022 City of Richmond Election for Mayor – Malcolm Brodie' => 'Gg1MOna_PjU', '2022 City of Richmond Election for Mayor' => "Nqd-bIgjYxY");

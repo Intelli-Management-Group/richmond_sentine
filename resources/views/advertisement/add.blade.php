@@ -5,7 +5,7 @@
     <ol class="breadcrumb breadcrumb-quirk">
         <li><a href="{{ url('dashboard') }}"><i class="fa fa-home mr5"></i> Home</a></li>
         <li><a href="{{ url('advertisement-list') }}"> Advertisement List</a></li>
-        <li class="active">Advertisement {{ isset($advertisement_data['abc']) ? $advertisement_data['abc'] : "Add" }}</li>
+        <li class="active">Advertisement {{ isset($advertisement_data) ? "Edit" : "Add" }}</li>
     </ol>
 
     @php
@@ -16,7 +16,7 @@
         <div class="col-md-12">
             <div class="panel advertisement_container">
                 <div class="panel-heading nopaddingbottom">
-                    <h4>Advertisement {{ isset($advertisement_data['abc']) ? $advertisement_data['abc'] : "Add" }}</h4>
+                    <h4>Advertisement {{ isset($advertisement_data) ? "Edit" : "Add" }}</h4>
                 </div>
                 <div class="panel-body">
                     <hr>

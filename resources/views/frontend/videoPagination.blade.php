@@ -27,7 +27,7 @@
                            @endif
                        </div>
                        <div class="thumbnail-height video-headinng">
-                       <p class="mt-2 mb-1 font-weight-light text-left">{{ str_limit($v->heading,80) }}</p>
+                       <p class="mt-2 mb-1 font-weight-light text-left thumbnail-title">{{ str_limit($v->heading,80) }}</p>
                        <p class=" mb-1 font-weight-light color-gray" style="font-size: 11px;">
                         {!! Carbon\Carbon::parse($v->publishDate)->format('F j, Y') !!}
                         </p>

@@ -24,11 +24,20 @@
                           data-url="{{ url($is_video ? 'insert-video' : 'insert-article') }}">
                         @csrf
                         
+                        @php
+                            // After a failed submit, show what the admin sent (even "nothing ticked"); otherwise the saved values.
+                            $selected_features = session()->hasOldInput()
+                                ? (array) old('featureId', [])
+                                : (isset($article_data) && is_array($article_data->featureId) ? $article_data->featureId : []);
+                            $selected_category = session()->hasOldInput()
+                                ? (((array) old('categoryId', []))[0] ?? null)
+                                : ($article_data->categoryId ?? null);
+                        @endphp
                         <input type="hidden" name="is_video" value="{{ $is_video }}">
                         <input type="hidden" name="article_id" value="{{ isset($article_data) ? $article_data->id : '' }}">
                         <input type="hidden" name="youtube_duration" 
                                id="youtube_duration" 
-                               value="{{ (isset($article_data) && $article_data->isYoutubeVideo) ? $article_data->videoDuration : old('youtube_duration') }}">
+                               value="{{ old('youtube_duration', (isset($article_data) && $article_data->isYoutubeVideo) ? $article_data->videoDuration : '') }}">
                         <input type="hidden" name="video_duration" 
                                id="video_duration" 
                                value="{{ (isset($article_data) && !$article_data->isYoutubeVideo) ? $article_data->videoDuration : null }}">
@@ -64,7 +73,7 @@
                                                 <input type="text" name="youtubeUrl" 
                                                        class="form-control" 
                                                        placeholder="Enter youtube URL" 
-                                                       value="{{ !empty($article_data) ? $article_data->youtubeUrl : old('youtubeUrl') }}">
+                                                       value="{{ old('youtubeUrl', $article_data->youtubeUrl ?? '') }}">
                                             </div>
                                             <label class="error" for="youtubeUrl" id="youtubeUrl_error">
                                                 @error('youtubeUrl') {{ $message }} @enderror
@@ -106,7 +115,7 @@
                                 <div class="col-sm-3 padding10">
                                     @foreach($feature_array as $key => $value)
                                         <input type="checkbox" name="featureId[]" value="{{ $key }}"
-                                        {{ isset($article_data) && is_array($article_data->featureId) && in_array($key, $article_data->featureId) ? 'checked' : '' }}> {{ $value }}
+                                        {{ in_array($key, $selected_features) ? 'checked' : '' }}> {{ $value }}
                                     @endforeach
                                     <label class="error" for="featureId">
                                         @error('featureId') {{ $message }} @enderror
@@ -118,7 +127,7 @@
                                 <select name="authorId" class="form-control">
                                     <option value="">Select author</option>
                                     @foreach($author_array as $key => $value)
-                                        <option value="{{ $key }}" {{ isset($article_data)  &&  $key == $article_data->authorId ? 'selected' : '' }}>{{ $value }}</option>
+                                        <option value="{{ $key }}" {{ old('authorId', $article_data->authorId ?? null) == $key ? 'selected' : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
                                 <label class="error" for="authorId">
@@ -138,7 +147,7 @@
                                                     <input type="radio" 
                                                            name="categoryId[]" 
                                                            value="{{ $key }}"
-                                                           {{ isset($article_data)  && ($key ==  $article_data->categoryId) ? 'checked' : '' }}
+                                                           {{ $selected_category !== null && $key == $selected_category ? 'checked' : '' }}
                                                            {{ count($value['child_list']) > 0 ? 'disabled' : '' }}>
                                                     <label>{{ $value['name'] }}</label>
                                                     @if(count($value['child_list']) > 0)
@@ -146,7 +155,7 @@
                                                             @foreach(count($value['child_list']) > 0 ? $value['child_list'] : [] as $ckey => $cvalue)
                                                                 <li class="has">
                                                                     <input type="radio" name="categoryId[]" value="{{ $ckey }}"
-                                                                        {{ isset($article_data)  && ($ckey ==  $article_data->categoryId) ? 'checked' : '' }}
+                                                                        {{ $selected_category !== null && $ckey == $selected_category ? 'checked' : '' }}
                                                                     >
                                                                     <label>{{ $cvalue['name'] }}</label>
                                                                 </li>
@@ -169,7 +178,7 @@
                                 <input type="text" name="source" 
                                        class="form-control" 
                                        placeholder="Enter source" 
-                                       value="{{ !empty($article_data) ? $article_data->source : old('source') }}">
+                                       value="{{ old('source', $article_data->source ?? '') }}">
                                 <label class="error" for="source">
                                     @error('source') {{ $message }} @enderror
                                 </label>
@@ -182,7 +191,7 @@
                                 <input type="text" name="heading" 
                                        class="form-control" 
                                        placeholder="Enter heading" 
-                                       value="{{ !empty($article_data) ? $article_data->heading :  old('heading') }}">
+                                       value="{{ old('heading', $article_data->heading ?? '') }}">
                                 <label class="error" for="heading">
                                     @error('heading') {{ $message }} @enderror
                                 </label>
@@ -195,7 +204,7 @@
                                 <input type="text" name="summary" 
                                        class="form-control" 
                                        placeholder="Enter summary" 
-                                       value="{{ !empty($article_data) ? $article_data->summary : old('summary') }}">
+                                       value="{{ old('summary', $article_data->summary ?? '') }}">
                                 <label class="error" for="summary">
                                     @error('summary') {{ $message }} @enderror
                                 </label>
@@ -223,7 +232,7 @@
                                           class="form-control" 
                                           placeholder="Enter description" 
                                           cols="4" 
-                                          rows="3">{{ !empty($article_data) ? $article_data->description : old('description') }}</textarea>
+                                          rows="3">{{ old('description', $article_data->description ?? '') }}</textarea>
                                 <label class="error" for="description">
                                     @error('description') {{ $message }} @enderror
                                 </label>
@@ -238,7 +247,7 @@
                                        class="form-control" 
                                        id="expiryDate" 
                                        autocomplete="off" 
-                                       value="{{ !empty($article_data) ? $article_data->expiryDate : old('expiryDate') }}">
+                                       value="{{ old('expiryDate', $article_data->expiryDate ?? '') }}">
                             </div>
                         </div>
 
@@ -335,7 +344,7 @@
                                            name="videoCredit" 
                                            class="form-control" 
                                            placeholder="Enter video credit" 
-                                           value="{{ !empty($article_data) ? $article_data->videoCredit : old('videoCredit') }}">
+                                           value="{{ old('videoCredit', $article_data->videoCredit ?? '') }}">
                                     <label class="error" for="videoCredit">
                                         @error('videoCredit') {{ $message }} @enderror
                                     </label>
@@ -349,7 +358,7 @@
                                 <input type="number" 
                                        name="viewCount" 
                                        class="form-control" 
-                                       value="{{ !empty($article_data) ? $article_data->viewCount : old('viewCount') }}">
+                                       value="{{ old('viewCount', $article_data->viewCount ?? '') }}">
                             </div>
                         </div>
 
@@ -450,7 +459,7 @@
                     }
                 });
 
-                @if(isset($article_data))
+                @if(isset($article_data) && !session()->hasOldInput())
                     $("#metaTag").importTags('{{ $article_data->metaTag }}');
                 @endif
 

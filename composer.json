@@ -70,7 +70,16 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names='server,queue,vite'"
-        ]
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
+        "test:schema": "@php tests/database/dump-schema.php"
+    },
+    "scripts-descriptions": {
+        "test": "Run the test suite against the RS_testing database",
+        "test:schema": "Refresh tests/database/schema.sql from the local development database"
     },
     "extra": {
         "laravel": {

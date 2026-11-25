@@ -87,7 +87,7 @@
                             </div>
                             <div class="thumbnail-height">
                                 <a href="{{ route('article-detail',["$n->id",str_slug("$n->heading", "-")]) }}">
-                                    <p class="mt-2 mb-1  font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
+                                    <p class="mt-2 mb-1  font-weight-light text-left thumbnail-title">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class=" color-gray" style="font-size: 11px;">
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}
@@ -123,7 +123,7 @@
                             </div>
                             <div class="thumbnail-height">
                                 <a href="{{ route('article-detail',["$n->id",str_slug("$n->heading", "-")]) }}">
-                                    <p class="mt-2 mb-1 font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
+                                    <p class="mt-2 mb-1 font-weight-light text-left thumbnail-title">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class="mb-1 color-gray" style="font-size: 11px;">
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}
@@ -158,7 +158,7 @@
                             </div>
                             <div class="thumbnail-height">
                                 <a href="{{ route('article-detail',["$n->id",str_slug("$n->heading", "-")]) }}">
-                                    <p class="mt-2 mb-1   font-weight-light text-left">{{ str_limit($n->heading,100) }}</p>
+                                    <p class="mt-2 mb-1   font-weight-light text-left thumbnail-title">{{ str_limit($n->heading,100) }}</p>
                                 </a>
                                 <p class="mb-1 color-gray" style="font-size: 11px;">
                                     {!! Carbon\Carbon::parse($n->publishDate)->format('F j, Y') !!}
@@ -261,25 +261,22 @@
             @foreach($videos as $video)
 
             <div class="video-inner">
-                <a href="{!!url('/videos',[$video->id,str_slug(str_limit($video->heading,50), '-')])!!}" class="d-block">
-                    <video src="{{ 'uploads/video/'.$video->videoFile }}" poster="{{ 'uploads/video_thumbnail/'.$video->videoThumbnail }}" preload="none" class="w-100">
-                        <p>If you are reading this, it is because your browser does not support the HTML5 video element.
-                        </p>
-                    </video>
-                    <div class="video-throbber hidden"><i class="fa fa-spinner fa-lg fa-spin" aria-hidden="true"></i></div>
+                <a href="{!!url('/videos',[$video->id,str_slug(str_limit($video->heading,50), '-')])!!}" class="d-block video-card">
+                    <img src="{{ 'uploads/video_thumbnail/'.$video->videoThumbnail }}" class="w-100 video-thumbnail" alt="{{ $video->heading }}" loading="lazy">
+                    @if($video->videoDuration)
                     <div class="video-btn">{!! $video->videoDuration !!}</div>
-                    <div class="video-play-pause"><i class="fa fa-play-circle-o fa-lg" aria-hidden="true"></i></div>
+                    @endif
                 </a>
                 <div class="video-detail">
                     <a href="{!!url('/videos',[$video->id,str_slug(str_limit($video->heading,50), '-')])!!}">
-                        <p class="text-left" style="margin-top:-10px;">{{ str_limit($video->heading,70) }}</p>
+                        <p class="text-left">{{ str_limit($video->heading,70) }}</p>
                     </a>
                 </div>
             </div>
             @endforeach
         </div>
     </div>
-    
+
     <!--Ad Fadeslider 3-->
 
     <div class="row partition">
