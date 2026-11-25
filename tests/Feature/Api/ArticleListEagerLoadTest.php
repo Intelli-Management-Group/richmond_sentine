@@ -35,8 +35,6 @@ it('eager-loads the category article list', function () {
 });
 
 it('eager-loads the home featured list', function () {
-    // One Slider article, so the Featured ones are not pulled into the slider fallback.
-    createArticle(['featureId' => (string) createFeature('Slider')]);
     $featured = createFeature('Featured');
     $community = createCategory('Community');
     $arts = createCategory('Arts & Culture', $community);

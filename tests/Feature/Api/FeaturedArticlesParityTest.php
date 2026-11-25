@@ -36,15 +36,31 @@ it('defaults the slider to 5 for app builds that send no top_article_count', fun
         ->and(homeFeed(['top_article_count' => 8])->json('top_five_articles'))->toHaveCount(8);
 });
 
-it('leaves slider articles out of featured_articles', function () {
+it('keeps slider articles in featured_articles', function () {
     $slider = createFeature('Slider');
     $featured = createFeature('Featured');
     $b = createArticle(['featureId' => (string) $featured, 'publishDate' => '2026-11-19 10:00:00']);
     $c = createArticle(['featureId' => "$slider,$featured", 'publishDate' => '2026-11-18 10:00:00']);
 
-    $ids = articleIds(homeFeed()->json('featured_articles'));
+    $response = homeFeed();
 
-    expect($ids)->toContain($b)->not->toContain($c);
+    expect(articleIds($response->json('top_five_articles')))->toBe([$c])
+        ->and(articleIds($response->json('featured_articles')))->toContain($b)->toContain($c);
+});
+
+it('lists every published article in featured_articles, newest first', function () {
+    $featured = createFeature('Featured');
+    $old = createArticle(['featureId' => (string) $featured, 'publishDate' => '2026-11-10 10:00:00']);
+    $new = createArticle(['featureId' => '', 'publishDate' => '2026-11-12 10:00:00']);
+    $mid = createArticle(['featureId' => '', 'publishDate' => '2026-11-11 10:00:00']);
+    $video = createArticle(['isVideo' => 1, 'publishDate' => '2026-11-13 10:00:00']);
+    $draft = createArticle(['status' => 0, 'publishDate' => '2026-11-14 10:00:00']);
+
+    $response = homeFeed();
+    $ids = array_values(array_intersect(articleIds($response->json('featured_articles')), [$old, $new, $mid, $video, $draft]));
+
+    expect($ids)->toBe([$new, $mid, $old])
+        ->and($response->json('total_records'))->toBe(3);
 });
 
 it('sends no home extras unless the app asks for them', function () {
@@ -77,22 +93,23 @@ it('adds the website latest news and home sections on page 1 when asked', functi
         ->toBe(array_column($feed->homeSections(), 'article_ids'));
 });
 
-it('sends no home extras and no slider articles on page 2', function () {
+it('sends no home extras or slider on page 2, but lists slider articles there in date order', function () {
     $slider = createFeature('Slider');
     $featured = createFeature('Featured');
     foreach (range(10, 24) as $day) {
-        // The two oldest are the slider, so without the exclusion they would land on page 2.
+        // The two oldest are the slider; by date they belong on page 2.
         $features = $day <= 11 ? "$slider,$featured" : (string) $featured;
         createArticle(['featureId' => $features, 'publishDate' => "2026-11-{$day} 10:00:00"]);
     }
 
     $response = homeFeed(['active_page' => 2, 'include_home' => 1]);
     $ids = articleIds($response->json('featured_articles'));
+    $slider_ids = app(WebsiteFeed::class)->homeSliderIds();
 
     expect($response->json('latest_news'))->toBe([])
         ->and($response->json('home_sections'))->toBe([])
-        ->and($ids)->not->toBeEmpty()
-        ->and(array_intersect($ids, app(WebsiteFeed::class)->homeSliderIds()))->toBe([]);
+        ->and($response->json('top_five_articles'))->toBe([])
+        ->and(array_values(array_intersect($ids, $slider_ids)))->toEqualCanonicalizing($slider_ids);
 });
 
 it('keeps the existing response keys', function () {

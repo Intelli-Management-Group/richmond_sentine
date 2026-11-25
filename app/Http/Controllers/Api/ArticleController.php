@@ -279,18 +279,17 @@ class ArticleController extends Controller
             }
 
             $user_id = session("user_details")->id;
-            $get_feature_id = get_feature_id("Featured");
 
-            // The slider is the website home slider; its articles are left out of the list below.
+            // The slider is the website home slider; its articles also appear in the list below.
             $top_article_details = array();
-            $id_to_skip = $website_feed->homeSliderIds($top_record_count);
             if ($page == 1) {
-                foreach ($website_feed->load($id_to_skip) as $t) {
+                foreach ($website_feed->load($website_feed->homeSliderIds($top_record_count)) as $t) {
                     array_push($top_article_details, $this->itereateArticleData($t, $user_id));
                 }
             }
 
-            $featured_article_data = ArticleDetail::with(WebsiteFeed::API_RELATIONS)->whereRaw("FIND_IN_SET($get_feature_id,featureId) > 0")->where("isVideo", 0)->where("status", 1)->whereNotIn("id", $id_to_skip);
+            // Every published article, newest first, whatever its features ("featured_articles" is kept as the key for the app).
+            $featured_article_data = ArticleDetail::with(WebsiteFeed::API_RELATIONS)->where("isVideo", 0)->where("status", 1);
             $total_featured_article = $featured_article_data->count();
 
             $skip = ((($page - 1) * $total_records) - count($id_not_display));
