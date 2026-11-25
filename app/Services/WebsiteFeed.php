@@ -108,7 +108,8 @@ final class WebsiteFeed
     }
 
     /**
-     * Full article models for the ids, in the order given.
+     * Full article models for the ids, in the order given, with the relations
+     * the API's itereateArticleData reads, so serializing them costs no query per article.
      *
      * @return Collection<int, ArticleDetail>
      */
@@ -119,7 +120,8 @@ final class WebsiteFeed
         }
         $position = array_flip(array_values($ids));
 
-        return ArticleDetail::whereIn('id', $ids)->get()
+        return ArticleDetail::with(['authorDetail', 'articleFileDetail', 'categoryDetail.parentCategoryDetail'])
+            ->whereIn('id', $ids)->get()
             ->sortBy(fn ($article) => $position[$article->id])
             ->values();
     }

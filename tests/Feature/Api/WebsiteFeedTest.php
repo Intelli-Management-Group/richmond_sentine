@@ -139,3 +139,27 @@ it('loads full articles in the order of the ids given', function () {
     expect($articles->pluck('id')->all())->toBe([$second, $first])
         ->and($articles->first()->heading)->toBe('Second');
 });
+
+it('loads the relations the API serializer reads in a fixed number of queries', function () {
+    $parent = createCategory('Community');
+    $child = createCategory('Arts & Culture', $parent);
+    $ids = [];
+    foreach (range(1, 5) as $i) {
+        $ids[] = createArticle(['categoryId' => $child]);
+    }
+
+    \Illuminate\Support\Facades\DB::enableQueryLog();
+    $articles = feed()->load($ids);
+    foreach ($articles as $article) {
+        $article->authorDetail;
+        $article->articleFileDetail->where('isMain', 1);
+        $article->categoryDetail->parentCategoryDetail;
+    }
+    $queries = count(\Illuminate\Support\Facades\DB::getQueryLog());
+
+    expect($articles)->toHaveCount(5)
+        ->and($articles->first()->relationLoaded('authorDetail'))->toBeTrue()
+        ->and($articles->first()->relationLoaded('articleFileDetail'))->toBeTrue()
+        ->and($articles->first()->categoryDetail->relationLoaded('parentCategoryDetail'))->toBeTrue()
+        ->and($queries)->toBeLessThanOrEqual(5);
+});
