@@ -164,9 +164,10 @@ class ArticleController extends Controller
             }
             $ad_display_index = config("constants.advertisement_index");
             $page = (int)request("active_page");
-            $top_record_count = request("top_article_count") ? (int)request("top_article_count") : 5;
+            $top_record_count = request("top_article_count") ? (int)request("top_article_count") : WebsiteFeed::CATEGORY_SLIDER_LIMIT;
             $total_records = (int)request("total_records");
             $id_not_display = (request("ad_ids") ? explode(",", request("ad_ids")) : array());
+            $website_feed = app(WebsiteFeed::class);
 
             $start_index = (($page * $total_records) - $total_records) + 1;
             $end_index = ($page * $total_records);
@@ -184,27 +185,22 @@ class ArticleController extends Controller
             $category_id_array = array();
             $category_data = CategoryDetail::select("name", "parentId")->where("id", $category_id)->where("isDisplayInApp", 1)->first();
             if ($category_data) {
-                // if ($category_data->name == "Latest News") {
-                //     $category_id_array = $this->getSubCategoryFromParent($category_data->parentId);
-                // } else {
-                array_push($category_id_array, $category_id);
-                //}
+                // Same categories, slider and list as the website category page.
+                $category_id_array = $website_feed->categoryIdsFor((int)$category_id);
             }
-            $id_to_skip = array();
-            $top_article_data = ArticleDetail::whereIn("categoryId", $category_id_array)->where("status", 1)->where("isVideo", 0)->take($top_record_count)->orderBy("publishDate", "desc")->get();
-            foreach (count((array)$top_article_data) > 0 ? $top_article_data : array() as $t) {
-                if ($page == 1) {
-                    array_push($top_article_details, $this->itereateArticleData($t));
+            if ($page == 1 && count($category_id_array) > 0) {
+                foreach ($website_feed->load($website_feed->categorySliderIds($category_id_array, $top_record_count)) as $t) {
+                    array_push($top_article_details, $this->itereateArticleData($t, $user_id));
                 }
-                array_push($id_to_skip, $t->id);
             }
 
-            $article_data = ArticleDetail::whereIn("categoryId", $category_id_array)->where("status", 1)->where("isVideo", 0)->whereNotIn("id", $id_to_skip);
+            // Like the website, the list also includes the slider articles.
+            $article_data = $website_feed->listQuery($category_id_array, array());
             $total_article_data = $article_data->count();
 
             $skip = ((($page - 1) * $total_records) - count($id_not_display));
             $take = $total_records - count($ad_index_array);
-            $article_data = $article_data->skip($skip)->take($take)->orderBy("publishDate", "desc")->get();
+            $article_data = $article_data->skip($skip)->take($take)->get();
 
             $start_index = (($page * $total_records) - $total_records) + 1;
             foreach (count((array)$article_data) > 0 ? $article_data : array() as $a) {
