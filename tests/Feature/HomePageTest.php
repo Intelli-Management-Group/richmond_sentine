@@ -23,6 +23,16 @@ it('links video carousel cards to the video page instead of playing inline', fun
         ->assertDontSee('video-play-pause', false);
 });
 
+it('marks YouTube cards with the YouTube icon and uploaded cards with their duration', function () {
+    createVideo(['heading' => 'Uploaded video', 'videoDuration' => '02:15']);
+
+    $this->get('/')->assertOk()->assertSee('02:15')->assertDontSee('video-youtube-icon', false);
+
+    createVideo(['heading' => 'YouTube video', 'isYoutubeVideo' => 1, 'videoFile' => null]);
+
+    $this->get('/')->assertOk()->assertSee('video-youtube-icon', false);
+});
+
 it('clamps long card titles so the publish date still shows', function () {
     $categoryId = createCategory('International');
     $heading = 'Prime Minister Carney strengthens Canada’s alliance with Europe at the Summit of the European Political Community';

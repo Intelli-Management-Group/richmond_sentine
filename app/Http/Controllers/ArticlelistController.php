@@ -63,7 +63,7 @@ class ArticlelistController extends Controller
         // dd($trending);
 
 
-        $videos = ArticleDetail::select("id", "heading", "videoThumbnail", "videoFile", "videoDuration")->where('status', 1)->where('isVideo', 1)->where('isYoutubeVideo', 0)->orderBy('publishDate', 'desc')->take(10)->get();
+        $videos = ArticleDetail::select("id", "heading", "videoThumbnail", "videoFile", "videoDuration", "isYoutubeVideo")->where('isVideo', 1)->where('status', 1)->orderBy('publishDate', 'desc')->take(10)->get();
 
         $category_id_canada = get_category_id("Canada");
         $sub_category_data = CategoryDetail::select("id")->where("parentId", $category_id_canada)->where('isDisplayInFrontend', 1)->get();

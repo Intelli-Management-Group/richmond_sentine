@@ -702,6 +702,17 @@ a:focus {
     float: none;
 }
 
+/* .video-inner is needed to beat Owl Carousel's .owl-carousel .owl-item img { width: 100% }. */
+.video-inner .video-card .video-youtube-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    opacity: 0.95;
+}
+
 .video-card + .video-detail p {
     margin-top: 10px;
 }

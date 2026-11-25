@@ -202,21 +202,7 @@
     <div class="row ml-xl-3 mr-xl-2 ml-lg-4 mr-lg-3 mx-md-4 mx-sm-3 mx-xs-3">
         <div class="owl-carousel owl-theme" id="videos-carousel">
             @foreach($videos as $video)
-            <div class="video-inner">
-                <a href="{!!url('/videos',["$video->id",str_slug(str_limit($video->heading,50), "-")])!!}">
-                    <video src="{{ '../../uploads/video/'.$video->videoFile }}" class="w-100" poster="{{ '../../uploads/video_thumbnail/'.$video->videoThumbnail }}" preload="none">
-                        <p>If you are reading this, it is because your browser does not support the HTML5 video element.
-                        </p>
-                    </video>
-                    <div class="video-btn">{!! $video->videoDuration !!}</div>
-                    <div class="video-play-pause"><i class="fa fa-play-circle-o fa-lg" aria-hidden="true"></i></div>
-                </a>
-                <div class="video-detail">
-                    <a href="{!!url('/videos',[$video->id,str_slug(str_limit($video->heading,50), '-')]) !!}">
-                        <p style="margin-top:-10px;" class="text-left">{{ str_limit($video->heading,70) }}</p>
-                    </a>
-                </div>
-            </div>
+            @include('frontend.partials.video-card')
             @endforeach
         </div>
     </div>

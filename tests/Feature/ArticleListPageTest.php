@@ -45,3 +45,20 @@ it('shows only published articles from the category', function () {
         ->not->toContain('Unpublished here')
         ->not->toContain('Other category');
 });
+
+it('shows the same video carousel as the home page, YouTube videos included', function () {
+    $categoryId = createCategory('International');
+    $uploadedId = createVideo(['heading' => 'Uploaded video', 'videoDuration' => '02:15', 'publishDate' => '2026-11-20 10:00:00']);
+    $youtubeId = createVideo(['heading' => 'YouTube video', 'isYoutubeVideo' => 1, 'videoFile' => null, 'videoThumbnail' => 'yt.jpg', 'publishDate' => '2026-11-21 10:00:00']);
+
+    $response = $this->get("/articles/{$categoryId}/International")->assertOk();
+
+    expect($response->viewData('videos')->pluck('id')->all())->toBe([$youtubeId, $uploadedId])
+        ->and($response->viewData('videos')->pluck('id')->all())->toBe($this->get('/')->viewData('videos')->pluck('id')->all());
+    $response->assertSee('href="'.url('/videos', [$youtubeId, 'youtube-video']).'"', false)
+        ->assertSee('uploads/video_thumbnail/yt.jpg', false)
+        ->assertSee('video-youtube-icon', false)
+        ->assertSee('02:15')
+        ->assertDontSee('uploads/video/test.mp4', false)
+        ->assertDontSee('video-play-pause', false);
+});

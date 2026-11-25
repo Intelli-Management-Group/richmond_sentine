@@ -259,20 +259,7 @@
     <div class="row ml-xl-3 mr-xl-2 ml-lg-4 mr-lg-3 mx-md-4 mx-sm-3 mx-xs-3">
         <div class="owl-carousel owl-theme" id="videos-carousel">
             @foreach($videos as $video)
-
-            <div class="video-inner">
-                <a href="{!!url('/videos',[$video->id,str_slug(str_limit($video->heading,50), '-')])!!}" class="d-block video-card">
-                    <img src="{{ 'uploads/video_thumbnail/'.$video->videoThumbnail }}" class="w-100 video-thumbnail" alt="{{ $video->heading }}" loading="lazy">
-                    @if($video->videoDuration)
-                    <div class="video-btn">{!! $video->videoDuration !!}</div>
-                    @endif
-                </a>
-                <div class="video-detail">
-                    <a href="{!!url('/videos',[$video->id,str_slug(str_limit($video->heading,50), '-')])!!}">
-                        <p class="text-left">{{ str_limit($video->heading,70) }}</p>
-                    </a>
-                </div>
-            </div>
+            @include('frontend.partials.video-card')
             @endforeach
         </div>
     </div>

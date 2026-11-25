@@ -100,7 +100,7 @@ class HomeController extends Controller
 
         $trending = getArticleDatahome([], 56, "false", "false", "true");
         // dd($trending);
-        $videos = ArticleDetail::select("id", "heading", "videoThumbnail", "videoFile", "videoDuration")->where('isVideo', 1)->where('status', 1)->orderBy('publishDate', 'desc')->take(10)->get();
+        $videos = ArticleDetail::select("id", "heading", "videoThumbnail", "videoFile", "videoDuration", "isYoutubeVideo")->where('isVideo', 1)->where('status', 1)->orderBy('publishDate', 'desc')->take(10)->get();
         $coupons = CouponDetail::all(["id", "heading", "companyName", "thumbnailImage", "originalPrice", "discountPrice"])->take(10);
         $category_data_array = get_category_data();
 
