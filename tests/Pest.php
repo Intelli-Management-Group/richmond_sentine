@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -12,7 +14,7 @@
 */
 
 pest()->extend(Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->use(Tests\Concerns\RefreshTestDatabase::class)
     ->in('Feature');
 
 /*
@@ -41,7 +43,65 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function createCategory(string $name, ?int $parentId = null): int
 {
-    // ..
+    return DB::table('category_details')->insertGetId([
+        'name' => $name,
+        'parentId' => $parentId,
+        'level' => $parentId ? 1 : 0,
+        'isDisplayInFrontend' => 1,
+        'isCouponCategory' => 0,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+}
+
+function createFeature(string $name): int
+{
+    return DB::table('article_feature_details')->insertGetId([
+        'name' => $name,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+}
+
+/**
+ * A published article with the main image the listing queries join on.
+ */
+function createArticle(array $attributes = []): int
+{
+    $id = DB::table('article_details')->insertGetId(array_merge([
+        'heading' => 'Test article',
+        'status' => 1,
+        'isVideo' => 0,
+        'featureId' => '',
+        'publishDate' => now(),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ], $attributes));
+
+    DB::table('article_file_details')->insert([
+        'articleId' => $id,
+        'fileName' => 'test.jpg',
+        'isMain' => 1,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return $id;
+}
+
+function createVideo(array $attributes = []): int
+{
+    return DB::table('article_details')->insertGetId(array_merge([
+        'heading' => 'Test video',
+        'status' => 1,
+        'isVideo' => 1,
+        'isYoutubeVideo' => 0,
+        'videoFile' => 'test.mp4',
+        'videoThumbnail' => 'test.jpg',
+        'publishDate' => now(),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ], $attributes));
 }
