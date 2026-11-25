@@ -327,9 +327,10 @@ class ArticleController extends Controller
             $article_data = array_values(array_filter($article_data));
 
             // The website home page's "Latest News" ticker and Community, Canada and International blocks.
+            // Sent only when the app asks (include_home=1): they add several MB, and older app builds don't show them.
             $latest_news = array();
             $home_sections = array();
-            if ($page == 1) {
+            if ($page == 1 && request("include_home")) {
                 foreach ($website_feed->load($website_feed->latestNewsIds()) as $l) {
                     array_push($latest_news, $this->itereateArticleData($l, $user_id));
                 }

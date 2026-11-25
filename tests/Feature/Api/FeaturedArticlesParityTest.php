@@ -46,7 +46,17 @@ it('leaves slider articles out of featured_articles', function () {
     expect($ids)->toContain($b)->not->toContain($c);
 });
 
-it('adds the website latest news and home sections on page 1', function () {
+it('sends no home extras unless the app asks for them', function () {
+    createCategory('Community');
+    createArticle();
+
+    $response = homeFeed();
+
+    expect($response->json('latest_news'))->toBe([])
+        ->and($response->json('home_sections'))->toBe([]);
+});
+
+it('adds the website latest news and home sections on page 1 when asked', function () {
     $community = createCategory('Community');
     $arts = createCategory('Arts & Culture', $community);
     $canada = createCategory('Canada');
@@ -56,7 +66,7 @@ it('adds the website latest news and home sections on page 1', function () {
     createArticle(['categoryId' => $provincial]);
     createArticle(['categoryId' => $international]);
 
-    $response = homeFeed();
+    $response = homeFeed(['include_home' => 1]);
     $feed = app(WebsiteFeed::class);
 
     expect(articleIds($response->json('latest_news')))->toBe($feed->latestNewsIds())
@@ -70,11 +80,12 @@ it('sends no home extras and no slider articles on page 2', function () {
     $slider = createFeature('Slider');
     $featured = createFeature('Featured');
     foreach (range(10, 24) as $day) {
-        $features = $day >= 23 ? "$slider,$featured" : (string) $featured;
+        // The two oldest are the slider, so without the exclusion they would land on page 2.
+        $features = $day <= 11 ? "$slider,$featured" : (string) $featured;
         createArticle(['featureId' => $features, 'publishDate' => "2026-11-{$day} 10:00:00"]);
     }
 
-    $response = homeFeed(['active_page' => 2]);
+    $response = homeFeed(['active_page' => 2, 'include_home' => 1]);
     $ids = articleIds($response->json('featured_articles'));
 
     expect($response->json('latest_news'))->toBe([])
