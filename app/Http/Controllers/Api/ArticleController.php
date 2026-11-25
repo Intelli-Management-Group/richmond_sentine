@@ -538,10 +538,11 @@ class ArticleController extends Controller
         if ($article_detail['video_type'] != "") {
             $article_detail['video_html'] = $this->generate_video_html(($article_detail['video_type'] == "video" ? $article_detail['video_file'] : $article_detail['youtube_url']), $article_detail['video_thumbnail_url'], $article_detail['video_type']);
         }
+        // publish_date is always the publish date, so lists read in the order they are sorted.
+        // Only the detail screen also says when an edited article was last updated.
         $updated_at = Carbon::parse($article_data->updated_at);
-        if (Carbon::parse($article_data->created_at)->timestamp != $updated_at->timestamp) {
+        if ($is_detail && Carbon::parse($article_data->created_at)->timestamp != $updated_at->timestamp) {
             $article_detail["last_updated"] = "Last Updated: " . $updated_at->format("M d, Y") . " at " . $updated_at->format("h:i a T");
-            $article_detail["publish_date"] = $updated_at->format("M d, Y");
         } else {
             $article_detail["last_updated"] = "";
         }
