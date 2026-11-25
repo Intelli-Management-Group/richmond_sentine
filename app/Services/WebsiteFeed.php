@@ -30,12 +30,21 @@ final class WebsiteFeed
     /** HomeController::index Community, Canada and International blocks. */
     public const HOME_SECTION_LIMIT = 14;
 
+    /** The relations Api\ArticleController::itereateArticleData reads for each article. */
+    public const API_RELATIONS = ['authorDetail', 'articleFileDetail', 'categoryDetail.parentCategoryDetail'];
+
     /**
-     * The home page slider: newest articles tagged Slider.
+     * The home page slider: newest articles tagged Slider, or newest Featured
+     * articles when none are tagged Slider (HomeController::index).
      */
     public function homeSliderIds(int $limit = self::HOME_SLIDER_LIMIT): array
     {
-        return $this->ids(getArticleDatahome([], $limit, "false", "true", "false"));
+        $rows = getArticleDatahome([], $limit, "false", "true", "false");
+        if ($rows->isEmpty()) {
+            $rows = getArticleDatahome([], $limit, "true", "false", "false");
+        }
+
+        return $this->ids($rows);
     }
 
     /**
@@ -89,11 +98,11 @@ final class WebsiteFeed
 
     /**
      * A website category page's article list (getArticlelist), newest first,
-     * as a query the caller can count and page.
+     * as a query the caller can count and page. The API relations are eager-loaded.
      */
     public function listQuery(array $categoryIds, array $excludeIds): Builder
     {
-        $query = ArticleDetail::query()
+        $query = ArticleDetail::with(self::API_RELATIONS)
             ->where('status', 1)
             ->where('isVideo', 0)
             ->whereIn('categoryId', $categoryIds)
@@ -120,7 +129,7 @@ final class WebsiteFeed
         }
         $position = array_flip(array_values($ids));
 
-        return ArticleDetail::with(['authorDetail', 'articleFileDetail', 'categoryDetail.parentCategoryDetail'])
+        return ArticleDetail::with(self::API_RELATIONS)
             ->whereIn('id', $ids)->get()
             ->sortBy(fn ($article) => $position[$article->id])
             ->values();

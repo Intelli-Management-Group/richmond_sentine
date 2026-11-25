@@ -59,10 +59,8 @@ class HomeController extends Controller
         $get_slider_id = get_feature_id("Slider");
         $top_slider = getArticleDatahome([], 8, "false", "true", "false");
         // ArticleDetail::select("id", "heading", "landscapeImage","videoThumbnail", "videoFile")->where('status', 1)->where('isVideo', 0)->whereRaw('FIND_IN_SET('.$get_slider_id.',featureId) > 0')->orderBy('publishDate', 'desc')->take(8)->get();
-        if (count((array)$top_slider) == 0) {
-            $get_feature_id = get_feature_id("Featured");
+        if ($top_slider->isEmpty()) {
             $top_slider = getArticleDatahome([], 8, "true", "false", "false");
-            ArticleDetail::select("id", "heading", "landscapeImage", "videoThumbnail", "videoFile")->where('status', 1)->where('isVideo', 0)->whereRaw('FIND_IN_SET(' . $get_feature_id . ',featureId) > 0')->orderBy('publishDate', 'desc')->take(8)->get();
         }
 
         $latest_news = ArticleDetail::select("id", "heading")->orderBy('publishDate', 'desc')->where('status', 1)->where('isVideo', 0)->take(5)->get();

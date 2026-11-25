@@ -24,15 +24,14 @@ it('picks the same home slider as the website', function () {
         ->and(feed()->homeSliderIds())->toBe(websiteIds($this->get('/')->assertOk()->viewData('top_slider')));
 });
 
-// HomeController::index has a Featured fallback, but its count((array) $collection) == 0
-// check is never true, so the website shows an empty slider. The app mirrors that.
-it('picks the same empty home slider as the website when nothing is tagged Slider', function () {
+it('falls back to Featured articles for the home slider when nothing is tagged Slider', function () {
     createFeature('Slider');
     $featured = createFeature('Featured');
-    createArticle(['featureId' => (string) $featured]);
+    $a = createArticle(['featureId' => (string) $featured, 'publishDate' => '2026-11-20 10:00:00']);
+    $b = createArticle(['featureId' => (string) $featured, 'publishDate' => '2026-11-21 10:00:00']);
     createArticle();
 
-    expect(feed()->homeSliderIds())->toBe([])
+    expect(feed()->homeSliderIds())->toBe([$b, $a])
         ->and(feed()->homeSliderIds())->toBe(websiteIds($this->get('/')->assertOk()->viewData('top_slider')));
 });
 

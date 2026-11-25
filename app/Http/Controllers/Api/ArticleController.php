@@ -290,7 +290,7 @@ class ArticleController extends Controller
                 }
             }
 
-            $featured_article_data = ArticleDetail::whereRaw("FIND_IN_SET($get_feature_id,featureId) > 0")->where("isVideo", 0)->where("status", 1)->whereNotIn("id", $id_to_skip);
+            $featured_article_data = ArticleDetail::with(WebsiteFeed::API_RELATIONS)->whereRaw("FIND_IN_SET($get_feature_id,featureId) > 0")->where("isVideo", 0)->where("status", 1)->whereNotIn("id", $id_to_skip);
             $total_featured_article = $featured_article_data->count();
 
             $skip = ((($page - 1) * $total_records) - count($id_not_display));
