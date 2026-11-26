@@ -204,7 +204,7 @@ class ArticleController extends Controller
             $article_data = $website_feed->listQuery($category_id_array, array());
             $total_article_data = $article_data->count();
 
-            $skip = ((($page - 1) * $total_records) - count($id_not_display));
+            $skip = $this->storiesBeforePage($page, $total_records, $ad_display_index);
             $take = $total_records - count($ad_index_array);
             $article_data = $article_data->skip($skip)->take($take)->get();
 
@@ -292,7 +292,7 @@ class ArticleController extends Controller
             $featured_article_data = ArticleDetail::with(WebsiteFeed::API_RELATIONS)->where("isVideo", 0)->where("status", 1);
             $total_featured_article = $featured_article_data->count();
 
-            $skip = ((($page - 1) * $total_records) - count($id_not_display));
+            $skip = $this->storiesBeforePage($page, $total_records, $ad_display_index);
             $take = $total_records - count($ad_index_array);
             $featured_article_data = $featured_article_data->skip($skip)->take($take)->orderBy("publishDate", "desc")->get();
 
@@ -1204,7 +1204,7 @@ class ArticleController extends Controller
             }
             $total_records = $data->count();
 
-            $skip = ((($page - 1) * $total_records_to_fetch) - count($id_not_display));
+            $skip = $this->storiesBeforePage($page, $total_records_to_fetch, $ad_display_index);
             $take = $total_records_to_fetch - count($ad_index_array);
             $data = $data->skip($skip)->take($take)->get();
 
@@ -1439,7 +1439,7 @@ class ArticleController extends Controller
                 $data = $data->orderBy("publishDate", "desc");
             }
             $total_records = $data->count();
-            $skip = ((($page - 1) * $total_records_to_fetch) - count($id_not_display));
+            $skip = $this->storiesBeforePage($page, $total_records_to_fetch, $ad_display_index);
             $take = $total_records_to_fetch - count($ad_index_array);
 
             $data = $data->skip($skip)->take($take)->get();
@@ -1586,7 +1586,7 @@ class ArticleController extends Controller
             $video_data = ArticleDetail::where("isVideo", 1)->where("status", 1);
             $total_videos = $video_data->count();
 
-            $skip = ((($page - 1) * $total_records) - count($id_not_display));
+            $skip = $this->storiesBeforePage($page, $total_records, $ad_display_index);
             $take = $total_records - count($ad_index_array);
             $video_data = $video_data->skip($skip)->take($take)->orderBy("publishDate", "desc")->get();
 
@@ -1682,7 +1682,7 @@ class ArticleController extends Controller
             $video_data = ArticleDetail::where("id", "!=", $article_id)->where("isVideo", 1)->where("status", 1);
             $total_videos = $video_data->count();
 
-            $skip = ((($page - 1) * $total_records) - count($id_not_display));
+            $skip = $this->storiesBeforePage($page, $total_records, $ad_display_index);
             $take = $total_records - count($ad_index_array);
             $video_data = $video_data->skip($skip)->take($take)->orderBy("publishDate", "desc")->get();
 
@@ -1841,6 +1841,19 @@ class ArticleController extends Controller
         } catch (\Exception $e) {
             return $this->sendResultJSON("0", $e->getMessage());
         }
+    }
+
+    /**
+     * The list offset for $page: how many stories the earlier pages sent. Each page has
+     * $per_page rows and every $ad_display_index-th row of the list is kept for an ad,
+     * filled or not, so this follows from the page number alone, not from the ad ids
+     * the app sends back.
+     */
+    private function storiesBeforePage(int $page, int $per_page, int $ad_display_index): int
+    {
+        $rows_before = max(0, ($page - 1) * $per_page);
+
+        return $rows_before - intdiv($rows_before, $ad_display_index);
     }
 
     /**
